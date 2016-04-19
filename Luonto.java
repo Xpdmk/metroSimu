@@ -1,3 +1,3 @@
 public class Luonto {
-  private int eläintenMäärä;
+  private int elaintenMaara;
 }
