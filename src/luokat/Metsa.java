@@ -1,4 +1,4 @@
-package metsoSimu.luokat;
+package luokat;
 
 public class Metsa {
   private int puidenMaara;
