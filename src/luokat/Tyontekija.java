@@ -1,4 +1,4 @@
-package metsoSimu.luokat;
+package luokat;
 import java.util.Random;
 
 public class Tyontekija {

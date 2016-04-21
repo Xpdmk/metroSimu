@@ -1,4 +1,4 @@
-package metsoSimu.luokat;
+package luokat;
 import java.util.Map;
 
 public class Raportti {
