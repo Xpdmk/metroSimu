@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" prefHeight="669.0" prefWidth="704.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="metrosimu.PaanakymanHallitsija">
+<AnchorPane id="AnchorPane" prefHeight="669.0" prefWidth="704.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Paanakyma.PaanakymanKasittelija">
     <children>
       <VBox alignment="CENTER" layoutX="15.0" layoutY="16.0" prefHeight="352.0" prefWidth="181.0">
          <children>
@@ -24,7 +24,7 @@
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Työntekijät" />
                   <Text fx:id="metsatyotTyontekijat" strokeType="OUTSIDE" strokeWidth="0.0" text="0+0" />
                   <Slider fx:id="metsatyotSlider" />
-                  <Button fx:id="bta1" mnemonicParsing="false" onAction="#tutkiTyolaisia" text="Tutki ja anna potkut" />
+                  <Button fx:id="bt1" mnemonicParsing="false" onAction="#tutkiTyolaisia" text="Tutki työntekijöitä" />
                </children>
             </VBox>
             <VBox alignment="CENTER" prefHeight="114.0" prefWidth="181.0">
@@ -37,7 +37,7 @@
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Työntekijät" />
                   <Text fx:id="metsastysTyontekijat" strokeType="OUTSIDE" strokeWidth="0.0" text="0+0" />
                   <Slider fx:id="metsastysSlider" />
-                  <Button fx:id="bta2" mnemonicParsing="false" text="Tutki ja anna potkut" />
+                  <Button fx:id="bt2" mnemonicParsing="false" onAction="#tutkiTyolaisia" text="Tutki työntekijöitä" />
                </children>
             </VBox>
             <VBox alignment="CENTER" prefHeight="114.0" prefWidth="181.0">
@@ -50,7 +50,7 @@
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Työntekijät" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="0+0" />
                   <Slider fx:id="kaivosSlider" />
-                  <Button fx:id="bta3" mnemonicParsing="false" text="Tutki ja anna potkut" />
+                  <Button fx:id="bt3" mnemonicParsing="false" onAction="#tutkiTyolaisia" text="Tutki työntekijöitä" />
                </children>
             </VBox>
          </children>
