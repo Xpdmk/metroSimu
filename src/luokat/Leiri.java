@@ -1,4 +1,4 @@
-package metsoSimu.luokat;
+package luokat;
 import java.util.ArrayList;
 
 public class Leiri {
