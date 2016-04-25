@@ -63,6 +63,22 @@ public class Tyontekija {
         this.tehokkuus = tehokkuus;
     }
 
+    public double getPalkka() {
+        return palkka;
+    }
+
+    public int getKokemus() {
+        return kokemus;
+    }
+
+    public void setPalkka(double palkka) {
+        this.palkka = palkka;
+    }
+
+    public void setKokemus(int kokemus) {
+        this.kokemus = kokemus;
+    }
+
     public void setTyontekijakoodi(int tyontekijakoodi) {
         this.tyontekijakoodi = tyontekijakoodi;
     }
