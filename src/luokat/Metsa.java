@@ -5,9 +5,8 @@ public class Metsa {
   private double puidenKasvu;
   private double palkka;
   public Metsa() {
-    this.puidenMaara = 500;
-    this.puidenKasvu = 10.0;
-    this.palkka = 10;
+    this.puidenMaara = 10000000;
+    this.puidenKasvu = 0.1;
   }
 
     public int getPuidenMaara() {
@@ -18,10 +17,6 @@ public class Metsa {
         return puidenKasvu;
     }
 
-    public double getPalkka() {
-        return palkka;
-    }
-
     public void setPuidenMaara(int puidenMaara) {
         this.puidenMaara = puidenMaara;
     }
@@ -30,8 +25,5 @@ public class Metsa {
         this.puidenKasvu = puidenKasvu;
     }
 
-    public void setPalkka(double palkka) {
-        this.palkka = palkka;
-    }
   
 }
