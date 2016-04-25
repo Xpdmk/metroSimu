@@ -66,6 +66,11 @@ public class TyontekijanakymanKasittelija implements Initializable {
         TableColumn<Tyontekijanakymarivi, Double> tehokkuusSarake = new TableColumn("Tehokkuus");
         tehokkuusSarake.setMinWidth(100);
         tehokkuusSarake.setCellValueFactory(new PropertyValueFactory<>("tehokkuus"));
+        
+        //Työntekijän palkka -sarake
+        TableColumn<Tyontekijanakymarivi, Double> palkkaSarake = new TableColumn("Palkka");
+        tehokkuusSarake.setMinWidth(100);
+        tehokkuusSarake.setCellValueFactory(new PropertyValueFactory<>("palkka"));
 
         //Työntekijän tohelointien määrä -sarake
         TableColumn<Tyontekijanakymarivi, Integer> toheloinnitSarake = new TableColumn<>("Toheloinnit");
@@ -78,12 +83,12 @@ public class TyontekijanakymanKasittelija implements Initializable {
         valintaruutuSarake.setCellValueFactory(new PropertyValueFactory<>("valintaruutu"));
 
         //Lisätään sarakkeet taulukkoon
-        taulukko.getColumns().addAll(tyontekijakoodiSarake, tehokkuusSarake, toheloinnitSarake, valintaruutuSarake);
+        taulukko.getColumns().addAll(tyontekijakoodiSarake, tehokkuusSarake, palkkaSarake, toheloinnitSarake, valintaruutuSarake);
 
         //Taulukon valmistelu
         ObservableList<Tyontekijanakymarivi> OBTyontekijanakymarivit = FXCollections.observableArrayList();
         for (Tyontekija tyontekija : tyontekijat) {
-            OBTyontekijanakymarivit.add(new Tyontekijanakymarivi(tyontekija.getTyontekijakoodi(), tyontekija.getTehokkuus(), tyontekija.getToheloinnit()));
+            OBTyontekijanakymarivit.add(new Tyontekijanakymarivi(tyontekija.getTyontekijakoodi(), tyontekija.getTehokkuus(), tyontekija.getPalkka(), tyontekija.getToheloinnit()));
         }
 
         //Lisätään lista riveistä

@@ -48,7 +48,7 @@
                      </font>
                   </Label>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Työntekijät" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="0+0" />
+                  <Text fx:id="kaivosTyontekijat" strokeType="OUTSIDE" strokeWidth="0.0" text="0+0" />
                   <Slider fx:id="kaivosSlider" />
                   <Button fx:id="bt3" mnemonicParsing="false" onAction="#tutkiTyolaisia" text="Tutki työntekijöitä" />
                </children>
