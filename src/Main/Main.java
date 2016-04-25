@@ -17,6 +17,8 @@ import javafx.stage.Stage;
 import luokat.Leiri;
 import luokat.Tyontekija;
 import static javafx.application.Application.launch;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 
 public class Main extends Application implements Initializable {
 
@@ -24,6 +26,12 @@ public class Main extends Application implements Initializable {
     static int lisaaMetsatyotTyontekijoita;
     static int lisaaMetsastysTyontekijoita;
     static int lisaaKaivosTyontekijoita;
+    static Slider s1;
+    static Slider s2;
+    static Slider s3;
+    static TextField k1;
+    static TextField k2;
+    static TextField k3;
     static Parent root;
 
     //Main.fxml -tiedoston elementtien id:den määritys. 
@@ -50,21 +58,38 @@ public class Main extends Application implements Initializable {
     //Javafx suorittaa tämän metodien, kun main-metodin launch(args) suoritetaan
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Boolean kaynnissa = true;
         lisaaMetsatyotTyontekijoita = 0;
         lisaaMetsastysTyontekijoita = 0;
         lisaaKaivosTyontekijoita = 0;
         
         //Leirin valmistelu
         leiri = new Leiri();
-        leiri.lisaaTyontekijat(new Tyontekija[]{new Tyontekija(0.2,2.4,1,1)});
+        lisaaMetsatyotTyontekijoita = 0;
+        lisaaMetsastysTyontekijoita = 0;
+        lisaaKaivosTyontekijoita = 0;
+        leiri.lisaaTyontekijat(new Tyontekija[]{new Tyontekija(0.2, 2.4, 1, 1, 20, 0)});
         
         //Main.fxml tiedoston lataus samasta kansiosta
         root = FXMLLoader.load(getClass().getResource("Main.fxml"));
         
+        //Slidereiden valmistelu
+        s1 = (Slider) root.lookup("#metsatyotSlider");
+        s2 = (Slider) root.lookup("#metsastysSlider");
+        s3 = (Slider) root.lookup("#kaivosSlider");
+        
+        //Kenttien valmistelu
+        k1 = (TextField) root.lookup("#lisaaKentta1");
+        k2 = (TextField) root.lookup("#lisaaKentta2");
+        k3 = (TextField) root.lookup("#lisaaKentta3");
+        
+        //Tekstien valmistelu
+        metsatyotTyontekijat = (Text) root.lookup("#metsatyotTyontekijat");
+        metsastysTyontekijat = (Text) root.lookup("#metsastysTyontekijat");
+        kaivosTyontekijat = (Text) root.lookup("#kaivosTyontekijat");
+        
         //Ikkunan valmistelut ja näyttö
+        paivita();
         primaryStage.setTitle("Resurssienkeruusimulaattori");
-        paivitaLuvut();
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
 
@@ -99,15 +124,55 @@ public class Main extends Application implements Initializable {
         ArrayList<Integer> poistettavat = new TyontekijanakymanKasittelija().nayta(leiri.palautaTyontekijatTyopaikkaindksilla(numero), ikkunanOtsikko);
 
         leiri.poistaTyontekijat(poistettavat);
-
-        paivitaLuvut();
     }
 
     @FXML
-    private void paivitaLuvut() {
-        ((Text) root.lookup("#metsatyotTyontekijat")).setText("" + leiri.palautaTyontekijoidenMaaraTyopaikkaindeksilla(1) + "+" + lisaaMetsatyotTyontekijoita);
-        ((Text) root.lookup("#metsastysTyontekijat")).setText("" + leiri.palautaTyontekijoidenMaaraTyopaikkaindeksilla(2) + "+" + lisaaMetsastysTyontekijoita);
-        ((Text) root.lookup("#kaivosTyontekijat")).setText("" + leiri.palautaTyontekijoidenMaaraTyopaikkaindeksilla(3) + "+" + lisaaKaivosTyontekijoita);
+    private void paivita() {
+        int metsatyotMaara = leiri.palautaTyontekijoidenMaaraTyopaikkaindeksilla(1);
+        int metsastysMaara = leiri.palautaTyontekijoidenMaaraTyopaikkaindeksilla(2);
+        int kaivosMaara = leiri.palautaTyontekijoidenMaaraTyopaikkaindeksilla(3);
+        int maxTickShow = 20;
+        
+        metsatyotTyontekijat.setText("Työntekijät: " + metsatyotMaara);
+        metsastysTyontekijat.setText("Työntekijät: " + metsastysMaara);
+        kaivosTyontekijat.setText("Työntekijät: " + kaivosMaara);
+        
+        k1.setPromptText("Montako lisätään. Slider: " + lisaaMetsatyotTyontekijoita);
+        k2.setPromptText("Montako lisätään. Slider: " + lisaaMetsastysTyontekijoita);
+        k3.setPromptText("Montako lisätään. Slider: " + lisaaKaivosTyontekijoita);
+        
+        s1.setMin(0);
+        s2.setMin(0);
+        s3.setMin(0);
+        
+        s1.setMax(metsatyotMaara*3);
+        s2.setMax(metsastysMaara*3);
+        s3.setMax(kaivosMaara*3);
+        
+        s1.setValue(lisaaMetsatyotTyontekijoita);
+        s2.setValue(lisaaMetsastysTyontekijoita);
+        s3.setValue(lisaaKaivosTyontekijoita);
+        
+        s1.setBlockIncrement(1);
+        s2.setBlockIncrement(1);
+        s3.setBlockIncrement(1);
+        
+        s1.setSnapToTicks(true);
+        s2.setSnapToTicks(true);
+        s3.setSnapToTicks(true);
+        
+        if (metsatyotMaara > maxTickShow) {
+            s1.setShowTickMarks(false);
+            s1.setShowTickLabels(false);
+        }
+        if (metsastysMaara > maxTickShow) {
+            s2.setShowTickMarks(false);
+            s2.setShowTickLabels(false);
+        }
+        if (kaivosMaara > maxTickShow) {
+            s3.setShowTickMarks(false);
+            s2.setShowTickLabels(false);
+        }
     }
 
 }

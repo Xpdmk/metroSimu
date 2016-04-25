@@ -39,15 +39,19 @@ public class TyontekijanakymanKasittelija implements Initializable {
     }
 
     public ArrayList<Integer> nayta(ArrayList<Tyontekija> tyontekijat, String ikkunanOtsikko) throws Exception {
+        //Käsittelyn valmistelu
         ikkuna = new Stage();
         muutoksetTallennetaan = true;
+        
+        //Tuodaan asettelu-muuttujaan asettelu sijainnista
         AnchorPane asettelu = FXMLLoader.load(getClass().getResource("/Tyontekijanakyma/Tyontekijanakyma.fxml"));
-        VBox vbox = (VBox) asettelu.getChildren().get(0);
-        TableView taulukko = (TableView) vbox.getChildren().get(1);
-        HBox hbox = (HBox) vbox.getChildren().get(2);
-        Button hyvaksy = (Button) hbox.getChildren().get(1);
-        Button peruuta = (Button) hbox.getChildren().get(2);
+        
+        //Haetaan asettelusta napit ja talukko
+        Button hyvaksy = (Button) asettelu.lookup("#hyvaksy");
+        Button peruuta = (Button) asettelu.lookup("#peruuta");
+        TableView taulukko = (TableView) asettelu.lookup("#tTaulukko");
 
+        //Määritetään, mitä tehdään, kun nappeja painetaan
         hyvaksy.setOnAction(e -> {
             ikkuna.close();
         });
@@ -69,8 +73,8 @@ public class TyontekijanakymanKasittelija implements Initializable {
         
         //Työntekijän palkka -sarake
         TableColumn<Tyontekijanakymarivi, Double> palkkaSarake = new TableColumn("Palkka");
-        tehokkuusSarake.setMinWidth(100);
-        tehokkuusSarake.setCellValueFactory(new PropertyValueFactory<>("palkka"));
+        palkkaSarake.setMinWidth(100);
+        palkkaSarake.setCellValueFactory(new PropertyValueFactory<>("palkka"));
 
         //Työntekijän tohelointien määrä -sarake
         TableColumn<Tyontekijanakymarivi, Integer> toheloinnitSarake = new TableColumn<>("Toheloinnit");
@@ -78,7 +82,7 @@ public class TyontekijanakymanKasittelija implements Initializable {
         toheloinnitSarake.setCellValueFactory(new PropertyValueFactory<>("toheloinnit"));
 
         //Sarake valintaruutuja varten
-        TableColumn<Tyontekijanakymarivi, CheckBox> valintaruutuSarake = new TableColumn<>("Valitse");
+        TableColumn<Tyontekijanakymarivi, CheckBox> valintaruutuSarake = new TableColumn<>("Pidä työntekijä");
         valintaruutuSarake.setMinWidth(30);
         valintaruutuSarake.setCellValueFactory(new PropertyValueFactory<>("valintaruutu"));
 
@@ -103,7 +107,7 @@ public class TyontekijanakymanKasittelija implements Initializable {
             JOptionPane.showMessageDialog(null, "Paina Hyväksy tai Peruuta palataksesi pääikkunaan");
         });
         ikkuna.setResizable(false);
-        ikkuna.setScene(new Scene(asettelu));
+        ikkuna.setScene(new Scene(asettelu, 600, 700));
         ikkuna.setTitle(ikkunanOtsikko);
         ikkuna.showAndWait();
 

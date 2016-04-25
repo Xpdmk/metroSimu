@@ -13,8 +13,6 @@ public class Tyontekija {
     private int tyopaikkaindeksi;
     private double palkka;
     private int kokemus;
-    final private int tohMin = 1;
-    private long tohMax;
 
     public Tyontekija(double todennakoisyysToheloida, double tehokkuus, int tyontekijakoodi, int tyopaikkaindeksi, double palkka, int kokemus) {
         this.todennakoisyysToheloida = todennakoisyysToheloida;
@@ -24,7 +22,6 @@ public class Tyontekija {
         this.tyopaikkaindeksi = tyopaikkaindeksi;
         this.palkka = palkka;
         this.kokemus = kokemus;
-        this.tohMax= Math.round(randomaattori.nextDouble()*10-0+0);
     }
 
     public Tyontekija(double tohMin, double tohMax, double tehokkuus, int tyontekijakoodi, int tyopaikkaindeksi, double palkka, int kokemus) {
@@ -87,7 +84,7 @@ public class Tyontekija {
         this.tyopaikkaindeksi = tyopaikkaindeksi;
     }
     public Boolean toheloiko(){
-        if (randomaattori.nextDouble()*tohMax-tohMin+tohMin < todennakoisyysToheloida){
+        if (randomaattori.nextDouble() < todennakoisyysToheloida){
             toheloinnit += 1;
             return true;
         }
