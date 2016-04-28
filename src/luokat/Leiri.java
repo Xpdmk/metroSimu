@@ -18,11 +18,11 @@ public class Leiri {
     public Leiri() {
         this.metsa = new Metsa();
         this.luonto = new Luonto();
-        this.tyontekijat = new ArrayList();
+        this.tyontekijat = new ArrayList<>();
         this.aterioidenMaara = 10;
         this.raha = 100;
         this.puu = 0;
-        this.raportit = new ArrayList();
+        this.raportit = new ArrayList<>();
     }
 
     public void kasittele() {
@@ -39,8 +39,8 @@ public class Leiri {
         return raportit.get(raportit.size() - 1);
     }
 
-    public void lisaaTyontekijat(Tyontekija[] tyontekijat) {
-        for (Tyontekija tyontekija : tyontekijat) {
+    public void lisaaTyontekijat(Tyontekija[] lisattavat) {
+        for (Tyontekija tyontekija : lisattavat) {
             this.tyontekijat.add(tyontekija);
         }
     }
