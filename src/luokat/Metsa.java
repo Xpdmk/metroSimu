@@ -5,8 +5,8 @@ public class Metsa {
   private double puidenKasvu;
   private double palkka;
   public Metsa() {
-    this.puidenMaara = 10000000;
-    this.puidenKasvu = 0.1;
+    this.puidenMaara = 10000;
+    this.puidenKasvu = 1.1;
   }
 
     public int getPuidenMaara() {

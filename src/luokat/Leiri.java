@@ -5,6 +5,22 @@ import java.util.Random;
 
 public class Leiri {
 
+    public void setAterioidenMaara(int aterioidenMaara) {
+        this.aterioidenMaara = aterioidenMaara;
+    }
+
+    public void setRaha(double raha) {
+        this.raha = raha;
+    }
+
+    public void setPuu(int puu) {
+        this.puu = puu;
+    }
+
+    public void setOletusPalkka(int oletusPalkka) {
+        this.oletusPalkka = oletusPalkka;
+    }
+
     private Metsa metsa;
     private Luonto luonto;
     //private Kaivos kaivos;
@@ -55,20 +71,20 @@ public class Leiri {
          * ja mineraalien, tulon maaran, maksaa palkat ja ruokkii tyontekijat.
          * Naista tehdaan uusi Raportti-olio raporttilistaan.
          */
-        
+
         vuoronToheloijienKoodit = new ArrayList<>();
         vuoronSaadutAteriat = 0;
         vuoronSaatuPuu = 0;
-        
+
         kasitteleCooldown();
         laskeVelat();
         laskeTyontekijat();
         laskeResurssit();
-        
+
         raportit.add(new Raportti(vuoronSaadutAteriat, vuoronSaatuPuu, vuoronToheloijienKoodit, 0));
-        
+
     }
-    
+
     private void kasitteleCooldown() {
         if (onnettomuusCooldown > 0) {
             onnettomuusCooldown -= 1;
@@ -78,29 +94,31 @@ public class Leiri {
             }
         }
     }
-    
-    private void laskeTyontekijat(){
-                Random randoum=new Random();
-        for (Tyontekija tyontekija : tyontekijat){
-            
-            if (randoum.nextDouble() < tyontekija.getTodennakoisyysToheloida()){
-                onnettomuusCooldown+=4;
-                tyontekija.setToheloinnit(tyontekija.getToheloinnit()+1);
-                tyontekija.setPalkka(tyontekija.getPalkka()*1.1);
-                
+
+    private void laskeTyontekijat() {
+        Random randoum = new Random();
+        for (Tyontekija tyontekija : tyontekijat) {
+
+            if (randoum.nextDouble() < tyontekija.getTodennakoisyysToheloida()) {
+                onnettomuusCooldown += 4;
+                tyontekija.setToheloinnit(tyontekija.getToheloinnit() + 1);
+                tyontekija.setPalkka(tyontekija.getPalkka() * 1.1);
+
                 vuoronToheloijienKoodit.add(tyontekija.getTyontekijakoodi());
-                
+
             }
         }
     }
-    private void laskeVelat(){
-        for (Tyontekija tyontekija : tyontekijat){
+
+    private void laskeVelat() {
+        for (Tyontekija tyontekija : tyontekijat) {
             raha -= tyontekija.getPalkka();
             aterioidenMaara -= 1;
         }
     }
-    private void laskeResurssit(){
-        for (Tyontekija tyontekija : tyontekijat){
+
+    private void laskeResurssit() {
+        for (Tyontekija tyontekija : tyontekijat) {
             if (tyontekija.getTyopaikkaindeksi() == 2) {
                 double tehokkuus = tyontekija.getTehokkuus();
                 vuoronSaadutAteriat += tehokkuus;
@@ -120,7 +138,7 @@ public class Leiri {
         } else {
             return new Raportti(0, 0, new ArrayList<Integer>(), 0);
         }
-        
+
     }
 
     public void lisaaTyontekijat(Tyontekija[] lisattavat) {
