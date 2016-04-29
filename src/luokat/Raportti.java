@@ -1,4 +1,5 @@
 package luokat;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class Raportti {
@@ -8,7 +9,7 @@ public class Raportti {
   private Map<Integer, Integer> toheloinnitPerTyontekijakoodi;
   private double myyntitulot;
 
-  public Raportti(int saadutAteriat, int saatuPuu, Map<Integer, Integer> toheloinnitPerTyontekijakoodi, double myyntitulot) {
+  public Raportti(int saadutAteriat, int saatuPuu, ArrayList<Integer> toheloijat, double myyntitulot) {
     this.saadutAteriat = saadutAteriat;
     this.saatuPuu = saatuPuu;
     this.toheloinnitPerTyontekijakoodi = toheloinnitPerTyontekijakoodi;
