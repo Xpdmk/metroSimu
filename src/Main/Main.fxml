@@ -101,7 +101,7 @@
                      </opaqueInsets>
                   </Region>
                   <Button mnemonicParsing="false" text="Myy resursseja" />
-                  <Button mnemonicParsing="false" text="Suorita" />
+                  <Button fx:id="suorita" mnemonicParsing="false" text="Suorita" />
                </children>
             </HBox>
          </children>

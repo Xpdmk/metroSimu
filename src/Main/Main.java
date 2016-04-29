@@ -82,6 +82,19 @@ public class Main extends Application implements Initializable {
             }
 
         }
+        //Nappien toimintojen määritteleminen
+        Button suoritaNappi = (Button) root.lookup("#suorita");
+        suoritaNappi.setOnAction(e -> {
+            primaryStage.hide();
+            leiri.kasittele();
+            try {
+                start(new Stage());
+            } catch (Exception error){
+                error.printStackTrace();
+                primaryStage.close();
+            }
+            
+        });
 
         //Ikkunan valmistelut ja näyttö
         paivita();
