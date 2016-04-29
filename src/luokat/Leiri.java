@@ -5,22 +5,6 @@ import java.util.Random;
 
 public class Leiri {
 
-    public void setAterioidenMaara(int aterioidenMaara) {
-        this.aterioidenMaara = aterioidenMaara;
-    }
-
-    public void setRaha(double raha) {
-        this.raha = raha;
-    }
-
-    public void setPuu(int puu) {
-        this.puu = puu;
-    }
-
-    public void setOletusPalkka(int oletusPalkka) {
-        this.oletusPalkka = oletusPalkka;
-    }
-
     private Metsa metsa;
     private Luonto luonto;
     //private Kaivos kaivos;
@@ -175,5 +159,21 @@ public class Leiri {
             }
         }
         return ahertajat;
+    }
+    
+    public void setAterioidenMaara(int aterioidenMaara) {
+        this.aterioidenMaara = aterioidenMaara;
+    }
+
+    public void setRaha(double raha) {
+        this.raha = raha;
+    }
+
+    public void setPuu(int puu) {
+        this.puu = puu;
+    }
+
+    public void setOletusPalkka(int oletusPalkka) {
+        this.oletusPalkka = oletusPalkka;
     }
 }
