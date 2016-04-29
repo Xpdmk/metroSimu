@@ -6,71 +6,109 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" prefHeight="669.0" prefWidth="704.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Main.Main">
+<AnchorPane id="AnchorPane" prefHeight="647.0" prefWidth="704.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Main.Main">
     <children>
-      <VBox alignment="CENTER" layoutX="15.0" layoutY="16.0" prefHeight="352.0" prefWidth="181.0">
+      <VBox layoutX="245.0" layoutY="-12.0" prefHeight="830.0" prefWidth="704.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <VBox alignment="CENTER" prefHeight="114.0" prefWidth="181.0">
+            <HBox prefHeight="516.0" prefWidth="704.0" spacing="10.0">
                <children>
-                  <Label text="Metsätyöt">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                  </Label>
-                  <Text fx:id="metsatyotTyontekijat" strokeType="OUTSIDE" strokeWidth="0.0" text="1" />
-                  <TextField fx:id="lisaaKentta1" prefWidth="83.0" />
-                  <Slider fx:id="metsatyotSlider" blockIncrement="1.0" majorTickUnit="1.0" max="3.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" />
-                  <Button fx:id="bt1" mnemonicParsing="false" onAction="#tutkiTyolaisia" text="Tutki työntekijöitä" />
+                  <VBox prefHeight="352.0" prefWidth="181.0">
+                     <children>
+                        <VBox fx:id="editVBox0" alignment="CENTER" prefHeight="114.0" prefWidth="181.0">
+                           <children>
+                              <Label text="Metsätyöt">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="tyontekijatTeksti0" text="Työntekijöitä:" />
+                              <TextField fx:id="lisaaKentta0" />
+                              <Slider fx:id="slider0" blockIncrement="1.0" majorTickUnit="1.0" max="3.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" />
+                              <Button fx:id="bt1" mnemonicParsing="false" onAction="#tutkiTyolaisia" text="Tutki työntekijöitä" />
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="10.0" top="10.0" />
+                           </VBox.margin>
+                        </VBox>
+                        <VBox fx:id="editVBox1" alignment="CENTER" prefHeight="114.0" prefWidth="181.0">
+                           <children>
+                              <Label text="Metsästys">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="tyontekijatTeksti1" text="Työntekijöitä:" />
+                              <TextField fx:id="lisaaKentta1" />
+                              <Slider fx:id="slider1" blockIncrement="1.0" majorTickUnit="1.0" max="3.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" />
+                              <Button fx:id="bt2" mnemonicParsing="false" onAction="#tutkiTyolaisia" text="Tutki työntekijöitä" />
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="10.0" top="10.0" />
+                           </VBox.margin>
+                        </VBox>
+                        <VBox fx:id="editVBox2" alignment="CENTER" prefHeight="114.0" prefWidth="181.0">
+                           <children>
+                              <Label text="Kaivos">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="tyontekijatTeksti2" text="Työntekijöitä:" />
+                              <TextField fx:id="lisaaKentta2" />
+                              <Slider fx:id="slider2" blockIncrement="1.0" majorTickUnit="1.0" max="3.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" />
+                              <Button fx:id="bt3" mnemonicParsing="false" onAction="#tutkiTyolaisia" text="Tutki työntekijöitä" />
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="10.0" top="10.0" />
+                           </VBox.margin>
+                        </VBox>
+                     </children>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </VBox>
+                  <TableView HBox.hgrow="ALWAYS">
+                    <columns>
+                      <TableColumn fx:id="taulukkoKohde" editable="false" prefWidth="200.0" resizable="false" sortable="false" text="Kohde" />
+                      <TableColumn fx:id="taulukkoTiedot" editable="false" prefWidth="250.0" sortable="false" text="Tiedot" />
+                    </columns>
+                  </TableView>
                </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
                <VBox.margin>
-                  <Insets bottom="10.0" top="10.0" />
+                  <Insets />
                </VBox.margin>
-            </VBox>
-            <VBox alignment="CENTER" prefHeight="114.0" prefWidth="181.0">
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Label text="Metsästys">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                  </Label>
-                  <Text fx:id="metsastysTyontekijat" strokeType="OUTSIDE" strokeWidth="0.0" text="2" />
-                  <TextField fx:id="lisaaKentta2" />
-                  <Slider fx:id="metsastysSlider" blockIncrement="1.0" majorTickUnit="1.0" max="3.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" />
-                  <Button fx:id="bt2" mnemonicParsing="false" onAction="#tutkiTyolaisia" text="Tutki työntekijöitä" />
+                  <TextArea editable="false" HBox.hgrow="ALWAYS" />
                </children>
-               <VBox.margin>
-                  <Insets bottom="10.0" top="10.0" />
-               </VBox.margin>
-            </VBox>
-            <VBox alignment="CENTER" prefHeight="114.0" prefWidth="181.0">
+            </HBox>
+            <HBox prefHeight="0.0" prefWidth="704.0" spacing="10.0">
                <children>
-                  <Label text="Kaivos">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                  </Label>
-                  <Text fx:id="kaivosTyontekijat" strokeType="OUTSIDE" strokeWidth="0.0" text="3" />
-                  <TextField fx:id="lisaaKentta3" />
-                  <Slider fx:id="kaivosSlider" blockIncrement="1.0" majorTickUnit="1.0" max="3.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" />
-                  <Button fx:id="bt3" mnemonicParsing="false" onAction="#tutkiTyolaisia" text="Tutki työntekijöitä" />
+                  <Region HBox.hgrow="ALWAYS">
+                     <opaqueInsets>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </opaqueInsets>
+                  </Region>
+                  <Button mnemonicParsing="false" text="Myy resursseja" />
+                  <Button mnemonicParsing="false" text="Suorita" />
                </children>
-               <VBox.margin>
-                  <Insets bottom="10.0" top="10.0" />
-               </VBox.margin>
-            </VBox>
+            </HBox>
          </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
       </VBox>
-      <TableView layoutX="240.0" layoutY="9.0" prefHeight="470.0" prefWidth="450.0">
-        <columns>
-          <TableColumn fx:id="taulukkoKohde" editable="false" prefWidth="200.0" resizable="false" sortable="false" text="Kohde" />
-          <TableColumn fx:id="taulukkoTiedot" editable="false" prefWidth="250.0" sortable="false" text="Tiedot" />
-        </columns>
-      </TableView>
     </children>
 </AnchorPane>

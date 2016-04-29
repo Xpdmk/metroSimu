@@ -3,6 +3,7 @@ package Main;
 import Tyontekijanakyma.TyontekijanakymanKasittelija;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -19,35 +20,21 @@ import luokat.Tyontekija;
 import static javafx.application.Application.launch;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.Label;
 
 public class Main extends Application implements Initializable {
 
     static Leiri leiri;
-    static int lisaaMetsatyotTyontekijoita;
-    static int lisaaMetsastysTyontekijoita;
-    static int lisaaKaivosTyontekijoita;
-    static Slider s1;
-    static Slider s2;
-    static Slider s3;
-    static TextField k1;
-    static TextField k2;
-    static TextField k3;
+    static ArrayList<Integer> lisaaTyontekjoita;
+    static ArrayList<Slider> sliderit;
+    static ArrayList<TextField> kentat;
+    static ArrayList<Integer> maarat;
+    static ArrayList<Label> tekstit;
+    static int kaytettavienTyopaikkojenMaara;
+    static int tyopaikkojenMaara;
+    static int maxTickShow;
     static Parent root;
-
-    //Main.fxml -tiedoston elementtien id:den määritys. 
-    //Ei tarvitse määritellä, riittää, että se vastaa fxml-tiedoston id:tä
-    @FXML
-    private Text metsatyotTyontekijat;
-    @FXML
-    private Text metsastysTyontekijat;
-    @FXML
-    private Text kaivosTyontekijat;
-    @FXML
-    private Button bt1;
-    @FXML
-    private Button bt2;
-    @FXML
-    private Button bt3;
 
     public static void main(String[] args) {
         //Pääikkunan valmistelu ja avaus
@@ -58,35 +45,44 @@ public class Main extends Application implements Initializable {
     //Javafx suorittaa tämän metodien, kun main-metodin launch(args) suoritetaan
     @Override
     public void start(Stage primaryStage) throws Exception {
-        lisaaMetsatyotTyontekijoita = 0;
-        lisaaMetsastysTyontekijoita = 0;
-        lisaaKaivosTyontekijoita = 0;
-        
+        tyopaikkojenMaara = 3;
+        kaytettavienTyopaikkojenMaara = 2;
+        maxTickShow = 20;
+        lisaaTyontekjoita = new ArrayList<>(Collections.nCopies(kaytettavienTyopaikkojenMaara, 0));
+        sliderit = new ArrayList<>();
+        kentat = new ArrayList<>();
+        maarat = new ArrayList<>(Collections.nCopies(kaytettavienTyopaikkojenMaara, 0));
+        tekstit = new ArrayList<>();
+
         //Leirin valmistelu
         leiri = new Leiri();
-        lisaaMetsatyotTyontekijoita = 0;
-        lisaaMetsastysTyontekijoita = 0;
-        lisaaKaivosTyontekijoita = 0;
         leiri.lisaaTyontekijat(new Tyontekija[]{new Tyontekija(0.2, 2.4, 1, 1, 20, 0)});
-        
+
         //Main.fxml tiedoston lataus samasta kansiosta
         root = FXMLLoader.load(getClass().getResource("Main.fxml"));
-        
-        //Slidereiden valmistelu
-        s1 = (Slider) root.lookup("#metsatyotSlider");
-        s2 = (Slider) root.lookup("#metsastysSlider");
-        s3 = (Slider) root.lookup("#kaivosSlider");
-        
-        //Kenttien valmistelu
-        k1 = (TextField) root.lookup("#lisaaKentta1");
-        k2 = (TextField) root.lookup("#lisaaKentta2");
-        k3 = (TextField) root.lookup("#lisaaKentta3");
-        
-        //Tekstien valmistelu
-        metsatyotTyontekijat = (Text) root.lookup("#metsatyotTyontekijat");
-        metsastysTyontekijat = (Text) root.lookup("#metsastysTyontekijat");
-        kaivosTyontekijat = (Text) root.lookup("#kaivosTyontekijat");
-        
+
+        //Slidereiden, kenttien ja tekstien valmistelu
+        for (int i = 0; i < tyopaikkojenMaara; i++) {
+            if (i >= kaytettavienTyopaikkojenMaara)  {
+                root.lookup("#editVBox" + i).setDisable(true);
+                root.lookup("#tyontekijatTeksti" + i).setDisable(true);
+            } else {
+                //Haetaan Slider-elementti
+                Slider slider = (Slider) root.lookup("#slider" + i);
+                //Määritetään, mitä tehdään, kun sliderin arvo muuttuu
+                slider.valueProperty().addListener((ObservableValue<? extends Number> arvo, Number vanha, Number uusi) -> {
+                    if (vanha.intValue() != uusi.intValue()) {
+                        lisaaTyontekjoita.set(sliderit.indexOf(slider), (int) arvo.getValue().intValue());
+                        paivitaKentat();
+                    }
+                });
+                sliderit.add(slider);
+                kentat.add((TextField) root.lookup("#lisaaKentta" + i));
+                tekstit.add((Label) root.lookup("#tyontekijatTeksti" + i));
+            }
+
+        }
+
         //Ikkunan valmistelut ja näyttö
         paivita();
         primaryStage.setTitle("Resurssienkeruusimulaattori");
@@ -95,7 +91,6 @@ public class Main extends Application implements Initializable {
 
     }
 
-    //Omien olioiden määrittely
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -126,52 +121,50 @@ public class Main extends Application implements Initializable {
         leiri.poistaTyontekijat(poistettavat);
     }
 
-    @FXML
     private void paivita() {
-        int metsatyotMaara = leiri.palautaTyontekijoidenMaaraTyopaikkaindeksilla(1);
-        int metsastysMaara = leiri.palautaTyontekijoidenMaaraTyopaikkaindeksilla(2);
-        int kaivosMaara = leiri.palautaTyontekijoidenMaaraTyopaikkaindeksilla(3);
-        int maxTickShow = 20;
-        
-        metsatyotTyontekijat.setText("Työntekijät: " + metsatyotMaara);
-        metsastysTyontekijat.setText("Työntekijät: " + metsastysMaara);
-        kaivosTyontekijat.setText("Työntekijät: " + kaivosMaara);
-        
-        k1.setPromptText("Montako lisätään. Slider: " + lisaaMetsatyotTyontekijoita);
-        k2.setPromptText("Montako lisätään. Slider: " + lisaaMetsastysTyontekijoita);
-        k3.setPromptText("Montako lisätään. Slider: " + lisaaKaivosTyontekijoita);
-        
-        s1.setMin(0);
-        s2.setMin(0);
-        s3.setMin(0);
-        
-        s1.setMax(metsatyotMaara*3);
-        s2.setMax(metsastysMaara*3);
-        s3.setMax(kaivosMaara*3);
-        
-        s1.setValue(lisaaMetsatyotTyontekijoita);
-        s2.setValue(lisaaMetsastysTyontekijoita);
-        s3.setValue(lisaaKaivosTyontekijoita);
-        
-        s1.setBlockIncrement(1);
-        s2.setBlockIncrement(1);
-        s3.setBlockIncrement(1);
-        
-        s1.setSnapToTicks(true);
-        s2.setSnapToTicks(true);
-        s3.setSnapToTicks(true);
-        
-        if (metsatyotMaara > maxTickShow) {
-            s1.setShowTickMarks(false);
-            s1.setShowTickLabels(false);
+        paivitaTyontekijoidenMaarat();
+
+        for (int i = 0; i < tekstit.size(); i++) {
+            if (!tekstit.get(i).isDisabled()) {
+                tekstit.get(i).setText("Työntekijät: " + maarat.get(i));
+            }
         }
-        if (metsastysMaara > maxTickShow) {
-            s2.setShowTickMarks(false);
-            s2.setShowTickLabels(false);
+
+        paivitaKentat();
+        paivitaLisaaelementit();
+
+    }
+
+    private void paivitaKentat() {
+        for (int i = 0; i < kentat.size(); i++) {
+            kentat.get(i).setPromptText("Montako lisätään. Slider: " + lisaaTyontekjoita.get(i));
         }
-        if (kaivosMaara > maxTickShow) {
-            s3.setShowTickMarks(false);
-            s2.setShowTickLabels(false);
+    }
+
+    private void paivitaTyontekijoidenMaarat() {
+        for (int i = 0; i < maarat.size(); i++) {
+            maarat.set(i, leiri.palautaTyontekijoidenMaaraTyopaikkaindeksilla(i + 1));
+
+        }
+    }
+
+    private void paivitaLisaaelementit() {
+
+        for (int i = 0; i < maarat.size(); i++) {
+            int maara = maarat.get(i);
+            Slider slider = sliderit.get(i);
+            slider.setMin(0);
+            slider.setBlockIncrement(1);
+            slider.setSnapToTicks(true);
+            if (maara > maxTickShow) {
+                slider.setShowTickMarks(false);
+                slider.setShowTickLabels(false);
+            }
+            if (maara < 1) {
+                sliderit.get(i).setMax(3);
+            } else {
+                sliderit.get(i).setMax(maara * 3);
+            }
         }
     }
 

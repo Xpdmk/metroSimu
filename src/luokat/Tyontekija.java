@@ -1,6 +1,5 @@
 package luokat;
 
-import static java.lang.Math.round;
 import java.util.Random;
 
 public class Tyontekija {
