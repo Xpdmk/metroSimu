@@ -208,14 +208,17 @@ public class Main extends Application implements Initializable {
 
     private void tarkistaKentat() {
         for (TextField kentta : kentat) {
-            try {
-                lisaaTyontekjoita.set(kentat.indexOf(kentta), Integer.parseInt(kentta.getText()));
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Syötteen täytyy olla numero tai tyhjä");
-                kentta.requestFocus();
-                voidaanSulkea = false;
-                return;
+            if (!kentta.getText().isEmpty()) {
+                try {
+                    lisaaTyontekjoita.set(kentat.indexOf(kentta), Integer.parseInt(kentta.getText()));
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Syötteen täytyy olla numero tai tyhjä");
+                    kentta.requestFocus();
+                    voidaanSulkea = false;
+                    return;
+                }
             }
+
         }
         voidaanSulkea = true;
     }
