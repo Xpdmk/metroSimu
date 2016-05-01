@@ -30,6 +30,7 @@ public class Main extends Application implements Initializable {
     static ArrayList<TextField> kentat;
     static ArrayList<Integer> maarat;
     static ArrayList<Label> tekstit;
+    static boolean voidaanSulkea;
     static int kaytettavienTyopaikkojenMaara;
     static int tyopaikkojenMaara;
     static int maxTickShow;
@@ -38,13 +39,14 @@ public class Main extends Application implements Initializable {
     public static void main(String[] args) {
         //Pääikkunan valmistelu ja avaus
         tyopaikkojenMaara = 3;
+        voidaanSulkea = true;
         kaytettavienTyopaikkojenMaara = 2;
         maxTickShow = 20;
         lisaaTyontekjoita = new ArrayList<>(Collections.nCopies(kaytettavienTyopaikkojenMaara, 0));
 
         //Leirin valmistelu
         leiri = new Leiri();
-        
+
         launch(args);
 
     }
@@ -54,7 +56,7 @@ public class Main extends Application implements Initializable {
     public void start(Stage primaryStage) throws Exception {
         //Main.fxml tiedoston lataus samasta kansiosta
         root = FXMLLoader.load(getClass().getResource("Main.fxml"));
-        
+
         sliderit = new ArrayList<>();
         kentat = new ArrayList<>();
         maarat = new ArrayList<>(Collections.nCopies(kaytettavienTyopaikkojenMaara, 0));
@@ -62,7 +64,7 @@ public class Main extends Application implements Initializable {
 
         //Slidereiden, kenttien ja tekstien valmistelu
         for (int i = 0; i < tyopaikkojenMaara; i++) {
-            if (i >= kaytettavienTyopaikkojenMaara)  {
+            if (i >= kaytettavienTyopaikkojenMaara) {
                 root.lookup("#editVBox" + i).setDisable(true);
                 root.lookup("#tyontekijatTeksti" + i).setDisable(true);
             } else {
@@ -76,19 +78,14 @@ public class Main extends Application implements Initializable {
                         paivitaKentat();
                     }
                 });
-                
+
                 //Valmistellaan tekstikenttä-elementti
                 TextField kentta = (TextField) root.lookup("#lisaaKentta" + i);
                 kentat.add(kentta);
                 ////Lisätään kuuntelija, joka tarkistaa, onko syöte numero
                 kentta.focusedProperty().addListener((ObservableValue<? extends Boolean> arvo, Boolean vanha, Boolean uusi) -> {
                     if (vanha && !kentta.getText().isEmpty()) {
-                        try {
-                            lisaaTyontekjoita.set(kentat.indexOf(kentta), Integer.parseInt(kentta.getText()));
-                        } catch (Exception e) {
-                            JOptionPane.showMessageDialog(null, "Syötteen täytyy olla numero tai tyhjä");
-                            kentta.requestFocus();
-                        }
+                        tarkistaKentat();
                     }
                 });
                 tekstit.add((Label) root.lookup("#tyontekijatTeksti" + i));
@@ -98,25 +95,26 @@ public class Main extends Application implements Initializable {
         //Nappien toimintojen määritteleminen
         Button suoritaNappi = (Button) root.lookup("#suorita");
         suoritaNappi.setOnAction(e -> {
-            //Suljetaan ikkuna
-            primaryStage.close();
-            
-            //Palkataan työntekijät käyttäjän syöttöjen mukaan
-            for (int i = 0; i < lisaaTyontekjoita.size(); i++) {
-                
-                for (int k = 0; k < lisaaTyontekjoita.get(i); k++) {
-                    leiri.palkkaaTyontekija(i+1);
+            if (voidaanSulkea) {
+                //Suljetaan ikkuna
+                primaryStage.close();
+
+                //Palkataan työntekijät käyttäjän syöttöjen mukaan
+                for (int i = 0; i < lisaaTyontekjoita.size(); i++) {
+
+                    for (int k = 0; k < lisaaTyontekjoita.get(i); k++) {
+                        leiri.palkkaaTyontekija(i + 1);
+                    }
+                }
+
+                leiri.kasittele();
+                try {
+                    start(new Stage());
+                } catch (Exception error) {
+                    primaryStage.close();
                 }
             }
-            
-            leiri.kasittele();
-            try {
-                start(new Stage());
-            } catch (Exception error){
-                error.printStackTrace();
-                primaryStage.close();
-            }
-            
+
         });
 
         //Ikkunan valmistelut ja näyttö
@@ -159,7 +157,7 @@ public class Main extends Application implements Initializable {
 
     private void paivita() {
         paivitaTyontekijoidenMaarat();
-        
+
         for (int i = 0; i < tekstit.size(); i++) {
             if (!tekstit.get(i).isDisabled()) {
                 tekstit.get(i).setText("Työntekijät: " + maarat.get(i));
@@ -176,7 +174,7 @@ public class Main extends Application implements Initializable {
             if (!kentat.get(i).getText().isEmpty()) {
                 kentat.get(i).setText("" + lisaaTyontekjoita.get(i));
             }
-            
+
             kentat.get(i).setPromptText("Palkkaa tyontekijoita. Liukusäädin:" + lisaaTyontekjoita.get(i));
         }
     }
@@ -206,6 +204,20 @@ public class Main extends Application implements Initializable {
                 sliderit.get(i).setMax(maara * 3);
             }
         }
+    }
+
+    private void tarkistaKentat() {
+        for (TextField kentta : kentat) {
+            try {
+                lisaaTyontekjoita.set(kentat.indexOf(kentta), Integer.parseInt(kentta.getText()));
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Syötteen täytyy olla numero tai tyhjä");
+                kentta.requestFocus();
+                voidaanSulkea = false;
+                return;
+            }
+        }
+        voidaanSulkea = true;
     }
 
 }
