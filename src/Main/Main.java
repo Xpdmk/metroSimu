@@ -38,6 +38,14 @@ public class Main extends Application implements Initializable {
 
     public static void main(String[] args) {
         //Pääikkunan valmistelu ja avaus
+        tyopaikkojenMaara = 3;
+        kaytettavienTyopaikkojenMaara = 2;
+        maxTickShow = 20;
+        lisaaTyontekjoita = new ArrayList<>(Collections.nCopies(kaytettavienTyopaikkojenMaara, 0));
+
+        //Leirin valmistelu
+        leiri = new Leiri();
+        
         launch(args);
 
     }
@@ -45,21 +53,13 @@ public class Main extends Application implements Initializable {
     //Javafx suorittaa tämän metodien, kun main-metodin launch(args) suoritetaan
     @Override
     public void start(Stage primaryStage) throws Exception {
-        tyopaikkojenMaara = 3;
-        kaytettavienTyopaikkojenMaara = 2;
-        maxTickShow = 20;
-        lisaaTyontekjoita = new ArrayList<>(Collections.nCopies(kaytettavienTyopaikkojenMaara, 0));
+        //Main.fxml tiedoston lataus samasta kansiosta
+        root = FXMLLoader.load(getClass().getResource("Main.fxml"));
+        
         sliderit = new ArrayList<>();
         kentat = new ArrayList<>();
         maarat = new ArrayList<>(Collections.nCopies(kaytettavienTyopaikkojenMaara, 0));
         tekstit = new ArrayList<>();
-
-        //Leirin valmistelu
-        leiri = new Leiri();
-        leiri.lisaaTyontekijat(new Tyontekija[]{new Tyontekija(0.2, 2.4, 1, 1, 20, 0)});
-
-        //Main.fxml tiedoston lataus samasta kansiosta
-        root = FXMLLoader.load(getClass().getResource("Main.fxml"));
 
         //Slidereiden, kenttien ja tekstien valmistelu
         for (int i = 0; i < tyopaikkojenMaara; i++) {
@@ -85,7 +85,17 @@ public class Main extends Application implements Initializable {
         //Nappien toimintojen määritteleminen
         Button suoritaNappi = (Button) root.lookup("#suorita");
         suoritaNappi.setOnAction(e -> {
-            primaryStage.hide();
+            //Suljetaan ikkuna
+            primaryStage.close();
+            
+            //Palkataan työntekijät käyttäjän syöttöjen mukaan           
+            for (int i = 0; i < lisaaTyontekjoita.size(); i++) {
+                
+                for (int k = 0; k < lisaaTyontekjoita.get(i); k++) {
+                    leiri.palkkaaTyontekija(i+1);
+                }
+            }
+            
             leiri.kasittele();
             try {
                 start(new Stage());
@@ -136,7 +146,7 @@ public class Main extends Application implements Initializable {
 
     private void paivita() {
         paivitaTyontekijoidenMaarat();
-
+        
         for (int i = 0; i < tekstit.size(); i++) {
             if (!tekstit.get(i).isDisabled()) {
                 tekstit.get(i).setText("Työntekijät: " + maarat.get(i));
