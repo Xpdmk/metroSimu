@@ -39,4 +39,8 @@ public class Tyontekijanakymarivi {
         return tyontekijakoodi;
     }
     
+    public void vaihdaValintaruutu(boolean asd) {
+        this.valintaruutu.setSelected(asd);
+    }
+    
 }

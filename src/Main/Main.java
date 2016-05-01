@@ -1,9 +1,11 @@
 package Main;
 
-import Tyontekijanakyma.TyontekijanakymanKasittelija;
+import Tyontekijanakyma.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -21,6 +23,9 @@ import javafx.scene.control.TextField;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
 import javax.swing.JOptionPane;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
 
 public class Main extends Application implements Initializable {
 
@@ -30,6 +35,7 @@ public class Main extends Application implements Initializable {
     static ArrayList<TextField> kentat;
     static ArrayList<Integer> maarat;
     static ArrayList<Label> tekstit;
+    static ArrayList<Integer> potkittavat;
     static boolean voidaanSulkea;
     static int kaytettavienTyopaikkojenMaara;
     static int tyopaikkojenMaara;
@@ -41,8 +47,8 @@ public class Main extends Application implements Initializable {
         tyopaikkojenMaara = 3;
         voidaanSulkea = true;
         kaytettavienTyopaikkojenMaara = 2;
-        maxTickShow = 20;
-        lisaaTyontekjoita = new ArrayList<>(Collections.nCopies(kaytettavienTyopaikkojenMaara, 0));
+        maxTickShow = 5;
+        maarat = new ArrayList<>(Collections.nCopies(kaytettavienTyopaikkojenMaara, 0));
 
         //Leirin valmistelu
         leiri = new Leiri();
@@ -56,10 +62,11 @@ public class Main extends Application implements Initializable {
     public void start(Stage primaryStage) throws Exception {
         //Main.fxml tiedoston lataus samasta kansiosta
         root = FXMLLoader.load(getClass().getResource("Main.fxml"));
-
+        
+        lisaaTyontekjoita = new ArrayList<>(Collections.nCopies(kaytettavienTyopaikkojenMaara, 0));
+        potkittavat = new ArrayList<>();
         sliderit = new ArrayList<>();
         kentat = new ArrayList<>();
-        maarat = new ArrayList<>(Collections.nCopies(kaytettavienTyopaikkojenMaara, 0));
         tekstit = new ArrayList<>();
 
         //Slidereiden, kenttien ja tekstien valmistelu
@@ -75,13 +82,14 @@ public class Main extends Application implements Initializable {
                 slider.valueProperty().addListener((ObservableValue<? extends Number> arvo, Number vanha, Number uusi) -> {
                     if (vanha.intValue() != uusi.intValue()) {
                         lisaaTyontekjoita.set(sliderit.indexOf(slider), (int) arvo.getValue().intValue());
-                        paivitaKentat();
+                        paivitaKentta(sliderit.indexOf(slider));
                     }
                 });
 
                 //Valmistellaan tekstikenttä-elementti
                 TextField kentta = (TextField) root.lookup("#lisaaKentta" + i);
                 kentat.add(kentta);
+                kentta.setPromptText("Montako palkataan?");
                 ////Lisätään kuuntelija, joka tarkistaa, onko syöte numero
                 kentta.focusedProperty().addListener((ObservableValue<? extends Boolean> arvo, Boolean vanha, Boolean uusi) -> {
                     if (vanha && !kentta.getText().isEmpty()) {
@@ -98,6 +106,9 @@ public class Main extends Application implements Initializable {
             if (voidaanSulkea) {
                 //Suljetaan ikkuna
                 primaryStage.close();
+                
+                //Potkitaan ulos tyontekijat
+                leiri.poistaTyontekijat(potkittavat);
 
                 //Palkataan työntekijät käyttäjän syöttöjen mukaan
                 for (int i = 0; i < lisaaTyontekjoita.size(); i++) {
@@ -118,7 +129,8 @@ public class Main extends Application implements Initializable {
         });
 
         //Ikkunan valmistelut ja näyttö
-        paivita();
+        paivitaTyontekijatekstit();
+        paivitaLisaaelementit();
         primaryStage.setTitle("Resurssienkeruusimulaattori");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
@@ -150,39 +162,40 @@ public class Main extends Application implements Initializable {
         } else {
             return;
         }
-        ArrayList<Integer> poistettavat = new TyontekijanakymanKasittelija().nayta(leiri.palautaTyontekijatTyopaikkaindksilla(numero), ikkunanOtsikko);
-
-        leiri.poistaTyontekijat(poistettavat);
+        kasittelePotkittavat(new TyontekijanakymanKasittelija().naytaMuunneltu(leiri.palautaTyontekijatTyopaikkaindksilla(numero), potkittavat, ikkunanOtsikko));
     }
-
-    private void paivita() {
-        paivitaTyontekijoidenMaarat();
-
-        for (int i = 0; i < tekstit.size(); i++) {
-            if (!tekstit.get(i).isDisabled()) {
-                tekstit.get(i).setText("Työntekijät: " + maarat.get(i));
+    
+    private void kasittelePotkittavat(HashMap<Integer, Boolean> muutetut) {
+        for (Map.Entry<Integer, Boolean> pidetaanko:muutetut.entrySet()) {
+            if (pidetaanko.getValue()) {
+                for (Integer potkittava : potkittavat) {
+                    if (pidetaanko.getKey().equals(potkittava)) {
+                        potkittavat.remove(potkittava);
+                    }
+                }
+            } else {
+                potkittavat.add(pidetaanko.getKey());
             }
         }
-
-        paivitaKentat();
-        paivitaLisaaelementit();
-
     }
 
     private void paivitaKentat() {
         for (int i = 0; i < kentat.size(); i++) {
-            if (!kentat.get(i).getText().isEmpty()) {
-                kentat.get(i).setText("" + lisaaTyontekjoita.get(i));
-            }
-
-            kentat.get(i).setPromptText("Palkkaa tyontekijoita. Liukusäädin:" + lisaaTyontekjoita.get(i));
+            kentat.get(i).setText("" + lisaaTyontekjoita.get(i));
+            
         }
     }
+    
+    private void paivitaKentta(int i) {
+        kentat.get(i).setText("" + lisaaTyontekjoita.get(i));
+    }
 
-    private void paivitaTyontekijoidenMaarat() {
+    private void paivitaTyontekijatekstit() {
         for (int i = 0; i < maarat.size(); i++) {
             maarat.set(i, leiri.palautaTyontekijoidenMaaraTyopaikkaindeksilla(i + 1));
-
+            if (!tekstit.get(i).isDisabled()) {
+                tekstit.get(i).setText("Työntekijät: " + maarat.get(i));
+            }
         }
     }
 

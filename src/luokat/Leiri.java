@@ -170,7 +170,7 @@ public class Leiri {
     public ArrayList<Tyontekija> palautaTyontekijatTyopaikkaindksilla(int i) {
         ArrayList<Tyontekija> ahertajat = new ArrayList<>();
         for (Tyontekija tyontekija : tyontekijat) {
-            if (tyontekija.getTyontekijakoodi() == i) {
+            if (tyontekija.getTyopaikkaindeksi() == i) {
                 ahertajat.add(tyontekija);
             }
         }
