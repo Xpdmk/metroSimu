@@ -80,12 +80,10 @@ public class Leiri {
     }
 
     private void laskeTyontekijat() {
-        Random randoum = new Random();
         for (Tyontekija tyontekija : tyontekijat) {
 
-            if (randoum.nextDouble() < tyontekija.getTodennakoisyysToheloida()) {
+            if (tyontekija.toheloiko()) {
                 onnettomuusCooldown += 4;
-                tyontekija.setToheloinnit(tyontekija.getToheloinnit() + 1);
                 tyontekija.setPalkka(tyontekija.getPalkka() * 1.1);
 
                 vuoronToheloijienKoodit.add(tyontekija.getTyontekijakoodi());
@@ -125,10 +123,28 @@ public class Leiri {
 
     }
 
-    public void lisaaTyontekijat(Tyontekija[] lisattavat) {
-        for (Tyontekija tyontekija : lisattavat) {
-            this.tyontekijat.add(tyontekija);
+    public void palkkaaTyontekija(int tyopaikkaindeksi) {
+        int seuraavaTyontekijakoodi = 1;
+        Random randomaattori = new Random();
+        ALKU:
+        while (true) {
+            for (Tyontekija tyontekija : tyontekijat) {
+                if (tyontekija.getTyontekijakoodi() == seuraavaTyontekijakoodi) {
+                    seuraavaTyontekijakoodi++;
+                    continue ALKU;
+                }
+            }
+            break;
         }
+        
+        Tyontekija uusi;
+        //Testataanko, onko uusi tyontekija Jarno
+        if (new Random().nextDouble() < (1/1000)) {
+            uusi = new Tyontekija(0.8, 3, seuraavaTyontekijakoodi, tyopaikkaindeksi, oletusPalkka, 0);
+        } else {
+            uusi = new Tyontekija(randomaattori.nextDouble()*0.5, randomaattori.nextDouble()*20, seuraavaTyontekijakoodi, tyopaikkaindeksi, oletusPalkka, 0);
+        }
+        tyontekijat.add(uusi);
     }
 
     public void poistaTyontekijat(ArrayList<Integer> tyontekijakoodit) {
