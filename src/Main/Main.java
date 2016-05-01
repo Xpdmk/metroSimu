@@ -13,15 +13,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import luokat.Leiri;
-import luokat.Tyontekija;
 import static javafx.application.Application.launch;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
+import javax.swing.JOptionPane;
 
 public class Main extends Application implements Initializable {
 
@@ -69,15 +68,29 @@ public class Main extends Application implements Initializable {
             } else {
                 //Haetaan Slider-elementti
                 Slider slider = (Slider) root.lookup("#slider" + i);
-                //Määritetään, mitä tehdään, kun sliderin arvo muuttuu
+                sliderit.add(slider);
+                ////Lisätään kuuntelija, joka muuttaa lisaaTyontekijoita-listan arvoa, kun Slideria liikutetaan
                 slider.valueProperty().addListener((ObservableValue<? extends Number> arvo, Number vanha, Number uusi) -> {
                     if (vanha.intValue() != uusi.intValue()) {
                         lisaaTyontekjoita.set(sliderit.indexOf(slider), (int) arvo.getValue().intValue());
                         paivitaKentat();
                     }
                 });
-                sliderit.add(slider);
-                kentat.add((TextField) root.lookup("#lisaaKentta" + i));
+                
+                //Valmistellaan tekstikenttä-elementti
+                TextField kentta = (TextField) root.lookup("#lisaaKentta" + i);
+                kentat.add(kentta);
+                ////Lisätään kuuntelija, joka tarkistaa, onko syöte numero
+                kentta.focusedProperty().addListener((ObservableValue<? extends Boolean> arvo, Boolean vanha, Boolean uusi) -> {
+                    if (vanha && !kentta.getText().isEmpty()) {
+                        try {
+                            lisaaTyontekjoita.set(kentat.indexOf(kentta), Integer.parseInt(kentta.getText()));
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(null, "Syötteen täytyy olla numero tai tyhjä");
+                            kentta.requestFocus();
+                        }
+                    }
+                });
                 tekstit.add((Label) root.lookup("#tyontekijatTeksti" + i));
             }
 
@@ -88,7 +101,7 @@ public class Main extends Application implements Initializable {
             //Suljetaan ikkuna
             primaryStage.close();
             
-            //Palkataan työntekijät käyttäjän syöttöjen mukaan           
+            //Palkataan työntekijät käyttäjän syöttöjen mukaan
             for (int i = 0; i < lisaaTyontekjoita.size(); i++) {
                 
                 for (int k = 0; k < lisaaTyontekjoita.get(i); k++) {
@@ -160,7 +173,11 @@ public class Main extends Application implements Initializable {
 
     private void paivitaKentat() {
         for (int i = 0; i < kentat.size(); i++) {
-            kentat.get(i).setPromptText("Montako lisätään. Slider: " + lisaaTyontekjoita.get(i));
+            if (!kentat.get(i).getText().isEmpty()) {
+                kentat.get(i).setText("" + lisaaTyontekjoita.get(i));
+            }
+            
+            kentat.get(i).setPromptText("Palkkaa tyontekijoita. Liukusäädin:" + lisaaTyontekjoita.get(i));
         }
     }
 
