@@ -18,8 +18,10 @@ public class Leiri {
     private ArrayList<Integer> vuoronToheloijienKoodit;
     private int vuoronSaadutAteriat;
     private int vuoronSaatuPuu;
+    private ArrayList<Tyontekija> vuoronKuolleet;
     private int onnettomuusCooldown;
-    private int vuoronToheloinnit;
+    private int todnakOnnettomuuskuolema; //Prosentti
+    private Random randomaattori;
     //private Map<String, int> mineraalienMaara;
     private ArrayList<Raportti> raportit;
 
@@ -35,7 +37,8 @@ public class Leiri {
         this.vuoronToheloijienKoodit = new ArrayList<>();
         this.vuoronSaadutAteriat = 0;
         this.vuoronSaatuPuu = 0;
-        this.vuoronToheloinnit = 0;
+        this.todnakOnnettomuuskuolema = 10;
+        this.randomaattori = new Random();
     }
 
     public int getAterioidenMaara() {
@@ -62,7 +65,7 @@ public class Leiri {
         vuoronToheloijienKoodit = new ArrayList<>();
         vuoronSaadutAteriat = 0;
         vuoronSaatuPuu = 0;
-        vuoronToheloinnit = 0;
+        vuoronKuolleet = new ArrayList<>();
 
         kasitteleCooldown();
         laskeVelat();
@@ -87,14 +90,28 @@ public class Leiri {
         for (Tyontekija tyontekija : tyontekijat) {
             if (tyontekija.toheloiko()) {
                 onnettomuusCooldown += 4;
-                vuoronToheloinnit++;
                 vuoronToheloijienKoodit.add(tyontekija.getTyontekijakoodi());
+                if (randomaattori.nextDouble()*100 > 100-todnakOnnettomuuskuolema) {
+                    kuoletaTyontekija(tyontekija.getTyopaikkaindeksi());
+                }
 
             }
         }
         for (Tyontekija tyontekija : tyontekijat) {
-            tyontekija.setPalkka(tyontekija.getPalkka() * Math.pow(1.1, vuoronToheloinnit));
+            tyontekija.setPalkka(tyontekija.getPalkka() * Math.pow(1.1, vuoronToheloijienKoodit.size()));
         }
+    }
+    
+    private void kuoletaTyontekija(int tyopaikkaindeksi) {
+        ArrayList<Tyontekija> vaihtoehtoiset = new ArrayList<>();
+        for (Tyontekija tyontekija : tyontekijat) {
+            if (tyopaikkaindeksi == tyontekija.getTyopaikkaindeksi()) {
+                vaihtoehtoiset.add(tyontekija);
+            }
+        }
+        int randomTyontekijakoodi = randomaattori.nextInt(vaihtoehtoiset.size()-1);
+        vuoronKuolleet.add(vaihtoehtoiset.get(randomTyontekijakoodi));
+        tyontekijat.remove(vaihtoehtoiset.get(randomTyontekijakoodi));
     }
 
     private void laskeVelat() {
@@ -141,14 +158,13 @@ public class Leiri {
         if (!raportit.isEmpty()) {
             return raportit.get(raportit.size() - 1);
         } else {
-            return new Raportti(0, 0, new ArrayList<Integer>(), 0);
+            return new Raportti(0, 0, new ArrayList<>(), 0);
         }
 
     }
 
     public void palkkaaTyontekija(int tyopaikkaindeksi) {
         int seuraavaTyontekijakoodi = 1;
-        Random randomaattori = new Random();
         ALKU:
         while (true) {
             for (Tyontekija tyontekija : tyontekijat) {
