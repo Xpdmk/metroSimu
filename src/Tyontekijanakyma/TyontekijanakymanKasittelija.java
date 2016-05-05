@@ -28,7 +28,7 @@ public class TyontekijanakymanKasittelija implements Initializable {
     private Stage ikkuna;
     private Boolean muutoksetTallennetaan;
     private TableColumn<Tyontekijanakymarivi, Integer> tyontekijakoodiSarake;
-    private TableColumn<Tyontekijanakymarivi, Double> tehokkuusSarake;
+    private TableColumn<Tyontekijanakymarivi, Double> resurssitSarake;
     private TableColumn<Tyontekijanakymarivi, Double> palkkaSarake;
     private TableColumn<Tyontekijanakymarivi, Integer> toheloinnitSarake;
     private TableColumn<Tyontekijanakymarivi, CheckBox> valintaruutuSarake;
@@ -45,15 +45,13 @@ public class TyontekijanakymanKasittelija implements Initializable {
     
     private void valmistele(String ikkunanOtsikko){
         //Käsittelyn valmistelu
-        ikkuna = new Stage();
         muutoksetTallennetaan = true;
-        ikkuna.setResizable(false);
-        ikkuna.setTitle(ikkunanOtsikko);
-        
-        //Ikkuna asetetaan ei-ohitettavaksi
-        ikkuna.initModality(Modality.APPLICATION_MODAL);
 
         //Valmistellaan ikkuna
+        ikkuna = new Stage();
+        ikkuna.initModality(Modality.APPLICATION_MODAL);
+        ikkuna.setResizable(false);
+        ikkuna.setTitle(ikkunanOtsikko);
         ikkuna.setOnCloseRequest(e -> {
             e.consume();
             JOptionPane.showMessageDialog(null, "Paina Hyväksy tai Peruuta palataksesi pääikkunaan");
@@ -88,9 +86,9 @@ public class TyontekijanakymanKasittelija implements Initializable {
         tyontekijakoodiSarake.setCellValueFactory(new PropertyValueFactory<>("tyontekijakoodi"));
 
         //Työntekijän tehokkuus -sarake
-        tehokkuusSarake = new TableColumn("Tehokkuus");
-        tehokkuusSarake.setMinWidth(100);
-        tehokkuusSarake.setCellValueFactory(new PropertyValueFactory<>("tehokkuus"));
+        resurssitSarake = new TableColumn("Resurssit");
+        resurssitSarake.setMinWidth(100);
+        resurssitSarake.setCellValueFactory(new PropertyValueFactory<>("resurssit"));
         
         //Työntekijän palkka -sarake
         palkkaSarake = new TableColumn("Palkka");
@@ -108,7 +106,7 @@ public class TyontekijanakymanKasittelija implements Initializable {
         valintaruutuSarake.setCellValueFactory(new PropertyValueFactory<>("valintaruutu"));
         
         //Lisätään sarakkeet taulukkoon
-        taulukko.getColumns().addAll(tyontekijakoodiSarake, tehokkuusSarake, palkkaSarake, toheloinnitSarake, valintaruutuSarake);
+        taulukko.getColumns().addAll(tyontekijakoodiSarake, resurssitSarake, palkkaSarake, toheloinnitSarake, valintaruutuSarake);
     }
 
     public HashMap<Integer, Boolean> nayta(ArrayList<Tyontekija> tyontekijat, String ikkunanOtsikko) {
@@ -116,7 +114,7 @@ public class TyontekijanakymanKasittelija implements Initializable {
         //Taulukon valmistelu
         ArrayList<Tyontekijanakymarivi> rivit = new ArrayList<>();
         for (Tyontekija tyontekija : tyontekijat) {
-            rivit.add(new Tyontekijanakymarivi(tyontekija.getTyontekijakoodi(), tyontekija.getTehokkuus(), tyontekija.getPalkka(), tyontekija.getToheloinnit()));
+            rivit.add(new Tyontekijanakymarivi(tyontekija.getTyontekijakoodi(), tyontekija.getKeratytResurssit(), tyontekija.getPalkka(), tyontekija.getToheloinnit()));
         }
         
         return avaaIkkuna(rivit);
@@ -127,7 +125,7 @@ public class TyontekijanakymanKasittelija implements Initializable {
         //Taulukon valmistelu
         ArrayList<Tyontekijanakymarivi> rivit = new ArrayList<>();
         for (Tyontekija tyontekija : tyontekijat) {
-            Tyontekijanakymarivi rivi = new Tyontekijanakymarivi(tyontekija.getTyontekijakoodi(), tyontekija.getTehokkuus(), tyontekija.getPalkka(), tyontekija.getToheloinnit());
+            Tyontekijanakymarivi rivi = new Tyontekijanakymarivi(tyontekija.getTyontekijakoodi(), tyontekija.getKeratytResurssit(), tyontekija.getPalkka(), tyontekija.getToheloinnit());
             for (Integer koodi : muunnelmat) {
                 if (koodi.equals(rivi.getTyontekijakoodi())) {
                     rivi.vaihdaValintaruutu(false);

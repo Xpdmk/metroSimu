@@ -4,14 +4,14 @@ import javafx.scene.control.CheckBox;
 
 public class Tyontekijanakymarivi {
     private final int tyontekijakoodi;
-    private final double tehokkuus;
+    private final int resurssit;
     private final double palkka;
     private final int toheloinnit;
     private final CheckBox valintaruutu;
     
-    public Tyontekijanakymarivi(int tyontekijakoodi, double tehokkuus, double palkka, int toheloinnit) {
+    public Tyontekijanakymarivi(int tyontekijakoodi, int resurssit, double palkka, int toheloinnit) {
         this.tyontekijakoodi = tyontekijakoodi;
-        this.tehokkuus = tehokkuus;
+        this.resurssit = resurssit;
         this.palkka = palkka;
         this.toheloinnit = toheloinnit;
         this.valintaruutu = new CheckBox();
@@ -19,12 +19,12 @@ public class Tyontekijanakymarivi {
         this.valintaruutu.setSelected(true);
     }
 
-    public double getTehokkuus() {
-        return tehokkuus;
-    }
-
     public int getToheloinnit() {
         return toheloinnit;
+    }
+
+    public int getResurssit() {
+        return resurssit;
     }
 
     public double getPalkka() {

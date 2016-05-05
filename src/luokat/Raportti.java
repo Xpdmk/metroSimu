@@ -16,4 +16,22 @@ public class Raportti {
     this.myyntitulot = myyntitulot;
   }
 
+    public int getSaadutAteriat() {
+        return saadutAteriat;
+    }
+
+    public int getSaatuPuu() {
+        return saatuPuu;
+    }
+
+    public Map<Integer, Integer> getToheloinnitPerTyontekijakoodi() {
+        return toheloinnitPerTyontekijakoodi;
+    }
+
+    public double getMyyntitulot() {
+        return myyntitulot;
+    }
+  
+  
+
 }

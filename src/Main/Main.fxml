@@ -76,8 +76,8 @@
                   </VBox>
                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <TableView prefHeight="412.0" prefWidth="493.0" />
-                        <TableView />
+                        <TableView fx:id="taulukko0" prefHeight="412.0" prefWidth="493.0" />
+                        <TableView fx:id="taulukko1" />
                      </children>
                   </VBox>
                </children>

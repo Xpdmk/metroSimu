@@ -7,13 +7,14 @@ public class Tyontekija {
     private static Random randomaattori = new Random();
     private double todennakoisyysToheloida;
     private int toheloinnit;
-    private double tehokkuus;
+    private int tehokkuus;
     private int tyontekijakoodi;
     private int tyopaikkaindeksi;
     private double palkka;
     private int kokemus;
+    private int keratytResurssit;
 
-    public Tyontekija(double todennakoisyysToheloida, double tehokkuus, int tyontekijakoodi, int tyopaikkaindeksi, double palkka, int kokemus) {
+    public Tyontekija(double todennakoisyysToheloida, int tehokkuus, int tyontekijakoodi, int tyopaikkaindeksi, double palkka, int kokemus) {
         this.todennakoisyysToheloida = todennakoisyysToheloida;
         this.toheloinnit = 0;
         this.tehokkuus = tehokkuus;
@@ -21,9 +22,10 @@ public class Tyontekija {
         this.tyopaikkaindeksi = tyopaikkaindeksi;
         this.palkka = palkka;
         this.kokemus = kokemus;
+        this.keratytResurssit = 0;
     }
 
-    public Tyontekija(double tohMin, double tohMax, double tehokkuus, int tyontekijakoodi, int tyopaikkaindeksi, double palkka, int kokemus) {
+    public Tyontekija(double tohMin, double tohMax, int tehokkuus, int tyontekijakoodi, int tyopaikkaindeksi, double palkka, int kokemus) {
         this(randomaattori.nextDouble() * (tohMax - tohMin) + tohMin, tehokkuus, tyontekijakoodi, tyopaikkaindeksi, palkka, kokemus);
     }
 
@@ -35,7 +37,15 @@ public class Tyontekija {
         return toheloinnit;
     }
 
-    public double getTehokkuus() {
+    public void setKeratytResurssit(int keratytResurssit) {
+        this.keratytResurssit = keratytResurssit;
+    }
+
+    public int getKeratytResurssit() {
+        return keratytResurssit;
+    }
+
+    public int getTehokkuus() {
         return tehokkuus;
     }
 
@@ -55,7 +65,7 @@ public class Tyontekija {
         this.toheloinnit = toheloinnit;
     }
 
-    public void setTehokkuus(double tehokkuus) {
+    public void setTehokkuus(int tehokkuus) {
         this.tehokkuus = tehokkuus;
     }
 

@@ -2,6 +2,7 @@ package luokat;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.lang.Math;
 
 public class Leiri {
 
@@ -18,6 +19,7 @@ public class Leiri {
     private int vuoronSaadutAteriat;
     private int vuoronSaatuPuu;
     private int onnettomuusCooldown;
+    private int vuoronToheloinnit;
     //private Map<String, int> mineraalienMaara;
     private ArrayList<Raportti> raportit;
 
@@ -33,6 +35,7 @@ public class Leiri {
         this.vuoronToheloijienKoodit = new ArrayList<>();
         this.vuoronSaadutAteriat = 0;
         this.vuoronSaatuPuu = 0;
+        this.vuoronToheloinnit = 0;
     }
 
     public int getAterioidenMaara() {
@@ -59,6 +62,7 @@ public class Leiri {
         vuoronToheloijienKoodit = new ArrayList<>();
         vuoronSaadutAteriat = 0;
         vuoronSaatuPuu = 0;
+        vuoronToheloinnit = 0;
 
         kasitteleCooldown();
         laskeVelat();
@@ -81,14 +85,15 @@ public class Leiri {
 
     private void laskeTyontekijat() {
         for (Tyontekija tyontekija : tyontekijat) {
-
             if (tyontekija.toheloiko()) {
                 onnettomuusCooldown += 4;
-                tyontekija.setPalkka(tyontekija.getPalkka() * 1.1);
-
+                vuoronToheloinnit++;
                 vuoronToheloijienKoodit.add(tyontekija.getTyontekijakoodi());
 
             }
+        }
+        for (Tyontekija tyontekija : tyontekijat) {
+            tyontekija.setPalkka(tyontekija.getPalkka() * Math.pow(1.1, vuoronToheloinnit));
         }
     }
 
@@ -101,17 +106,35 @@ public class Leiri {
 
     private void laskeResurssit() {
         for (Tyontekija tyontekija : tyontekijat) {
+            int tehokkuus = tyontekija.getTehokkuus();
+            int vuoronKeratyt = 0;
+            int yritys = 0;
+            while (yritys < 5 && vuoronKeratyt < 4) {
+                vuoronKeratyt = new Random().nextInt(tehokkuus);
+                yritys++;
+            }
             if (tyontekija.getTyopaikkaindeksi() == 2) {
-                double tehokkuus = tyontekija.getTehokkuus();
-                vuoronSaadutAteriat += tehokkuus;
-                aterioidenMaara += tehokkuus;
+
+                vuoronSaadutAteriat += vuoronKeratyt;
+                aterioidenMaara += vuoronKeratyt;
             }
             if (tyontekija.getTyopaikkaindeksi() == 1) {
-                double tehokkuus = tyontekija.getTehokkuus();
-                puu += tehokkuus;
-                vuoronSaatuPuu += tehokkuus;
+                puu += vuoronKeratyt;
+                vuoronSaatuPuu += vuoronKeratyt;
             }
+            tyontekija.setKeratytResurssit(tyontekija.getKeratytResurssit() + vuoronKeratyt);
         }
+    }
+    
+    public double palautaPalkkoihinMenevaRaha(ArrayList<Integer> potkittavat) {
+        double palkat = 0;
+        for (Tyontekija tyontekija : tyontekijat) {
+            if (!potkittavat.contains(tyontekija.getTyontekijakoodi())) {
+                palkat += tyontekija.getPalkka();
+            }
+            
+        }
+        return palkat;
     }
 
     public Raportti viimeisinRaportti() {
@@ -136,13 +159,18 @@ public class Leiri {
             }
             break;
         }
-        
+
         Tyontekija uusi;
         //Testataanko, onko uusi tyontekija Jarno
-        if (new Random().nextDouble() < (1/1000)) {
+        if (new Random().nextDouble() < (1 / 1000)) {
             uusi = new Tyontekija(0.8, 3, seuraavaTyontekijakoodi, tyopaikkaindeksi, oletusPalkka, 0);
+            System.out.println("Jarno iskee!");
         } else {
-            uusi = new Tyontekija(randomaattori.nextDouble()*0.5, randomaattori.nextDouble()*20, seuraavaTyontekijakoodi, tyopaikkaindeksi, oletusPalkka, 0);
+            double tehokkuus = 0;
+            while (tehokkuus < 2) {
+                tehokkuus = Math.round(randomaattori.nextDouble() * 10);
+            }
+            uusi = new Tyontekija(randomaattori.nextDouble() * 0.2, (int) tehokkuus, seuraavaTyontekijakoodi, tyopaikkaindeksi, oletusPalkka, 0);
         }
         tyontekijat.add(uusi);
     }
@@ -176,7 +204,7 @@ public class Leiri {
         }
         return ahertajat;
     }
-    
+
     public void setAterioidenMaara(int aterioidenMaara) {
         this.aterioidenMaara = aterioidenMaara;
     }
