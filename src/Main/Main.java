@@ -101,6 +101,7 @@ public class Main extends Application implements Initializable {
                     if (vanha.intValue() != uusi.intValue()) {
                         lisaaTyontekjoita.set(sliderit.indexOf(slider), (int) arvo.getValue().intValue());
                         paivitaKentta(sliderit.indexOf(slider));
+                        paivitaTaulukot();
                     }
                 });
 
@@ -109,9 +110,23 @@ public class Main extends Application implements Initializable {
                 kentat.add(kentta);
                 kentta.setPromptText("Montako palkataan?");
                 ////Lisätään kuuntelija, joka tarkistaa, onko syöte numero
-                kentta.focusedProperty().addListener((ObservableValue<? extends Boolean> arvo, Boolean vanha, Boolean uusi) -> {
+                kentta.focusedProperty().addListener((arvo, vanha, uusi) -> {
                     if (vanha && !kentta.getText().isEmpty()) {
-                        tarkistaKentat();
+                        if (tarkistaKentat(true)) {
+                            voidaanSulkea = true;
+                        } else {
+                            voidaanSulkea = false;
+                        }
+                    }
+                });
+                kentta.textProperty().addListener((teksti, vanha, uusi) -> {
+                    if (!vanha.equals(uusi)) {
+                        int uusiArvo = 0;
+                        if (!uusi.isEmpty() && tarkistaKentat(false)) {
+                            uusiArvo = Integer.parseInt(kentta.getText());
+                        }
+                        lisaaTyontekjoita.set(kentat.indexOf(kentta), uusiArvo);
+                        paivitaTaulukot();
                     }
                 });
                 tekstit.add((Label) root.lookup("#tyontekijatTeksti" + i));
@@ -126,7 +141,7 @@ public class Main extends Application implements Initializable {
                 primaryStage.close();
 
                 //Katsotaan, riittääkö raha työntekijöiden palkkaamiseen
-                if (leiri.getRaha() < leiri.palautaPalkkoihinMenevaRaha(potkittavat)) {
+                if (leiri.getRaha() < leiri.palautaPalkkoihinMenevaRaha(potkittavat, lisattavienMaara())) {
                     JOptionPane.showMessageDialog(null, "GAME OVER, liian vähän rahaa");
                     System.exit(0);
                 }
@@ -161,21 +176,23 @@ public class Main extends Application implements Initializable {
 
     }
 
-    private void tarkistaKentat() {
+    private boolean tarkistaKentat(boolean ilmoitetaan) { //Palauttaa true, jos OK
         for (TextField kentta : kentat) {
             if (!kentta.getText().isEmpty()) {
                 try {
                     lisaaTyontekjoita.set(kentat.indexOf(kentta), Integer.parseInt(kentta.getText()));
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, "Syötteen täytyy olla numero tai tyhjä");
-                    kentta.requestFocus();
-                    voidaanSulkea = false;
-                    return;
+                    if (ilmoitetaan) {
+                        JOptionPane.showMessageDialog(null, "Syötteen täytyy olla numero tai tyhjä");
+                        kentta.requestFocus();
+                    }
+
+                    return false;
                 }
             }
 
         }
-        voidaanSulkea = true;
+        return true;
     }
 
     @Override
@@ -238,7 +255,9 @@ public class Main extends Application implements Initializable {
         nykyinenTilanne.add(new taulukkoTietue("Raha", "" + leiri.getRaha()));
         nykyinenTilanne.add(new taulukkoTietue("Puu", "" + leiri.getPuu()));
         nykyinenTilanne.add(new taulukkoTietue("Ateriat", "" + leiri.getAterioidenMaara()));
-        nykyinenTilanne.add(new taulukkoTietue("Palkkoihin menevä raha", "" + leiri.palautaPalkkoihinMenevaRaha(potkittavat)));
+        double maksettavaPalkka = leiri.palautaPalkkoihinMenevaRaha(potkittavat, lisattavienMaara());
+
+        nykyinenTilanne.add(new taulukkoTietue("Palkkoihin menevä raha", "" + maksettavaPalkka));
 
         ObservableList<taulukkoTietue> OBnykyinen = FXCollections.observableArrayList(nykyinenTilanne);
         taulukot.get(1).setItems(OBnykyinen);
@@ -298,6 +317,14 @@ public class Main extends Application implements Initializable {
                 sliderit.get(i).setMax(maara * 3);
             }
         }
+    }
+
+    private Integer lisattavienMaara() {
+        int maara = 0;
+        for (Integer lisattava : lisaaTyontekjoita) {
+            maara += lisattava;
+        }
+        return maara;
     }
 
 }

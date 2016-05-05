@@ -143,7 +143,7 @@ public class Leiri {
         }
     }
     
-    public double palautaPalkkoihinMenevaRaha(ArrayList<Integer> potkittavat) {
+    public double palautaPalkkoihinMenevaRaha(ArrayList<Integer> potkittavat, int lisattavat) {
         double palkat = 0;
         for (Tyontekija tyontekija : tyontekijat) {
             if (!potkittavat.contains(tyontekija.getTyontekijakoodi())) {
@@ -151,6 +151,7 @@ public class Leiri {
             }
             
         }
+        palkat += lisattavat*oletusPalkka;
         return palkat;
     }
 
