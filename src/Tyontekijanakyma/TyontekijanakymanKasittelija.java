@@ -146,12 +146,15 @@ public class TyontekijanakymanKasittelija implements Initializable {
         ikkuna.setScene(new Scene(asettelu, 600, 700));
         ikkuna.showAndWait();
         
-        HashMap<Integer, Boolean> tyontekijaMuutokset = new HashMap<>();
-        for (Tyontekijanakymarivi rivi : rivit) {
-            tyontekijaMuutokset.put(rivi.getTyontekijakoodi(), rivi.getValintaruutu().isSelected());
+        HashMap<Integer, Boolean> tyontekijamuutokset = new HashMap<>();
+        if (muutoksetTallennetaan) {
+            for (Tyontekijanakymarivi rivi : rivit) {
+            tyontekijamuutokset.put(rivi.getTyontekijakoodi(), rivi.getValintaruutu().isSelected());
+        }
         }
         
-        return tyontekijaMuutokset;
+        
+        return tyontekijamuutokset;
     }
 
 }

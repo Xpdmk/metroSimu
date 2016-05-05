@@ -124,7 +124,7 @@ public class Main extends Application implements Initializable {
             if (voidaanSulkea) {
                 //Suljetaan ikkuna
                 primaryStage.close();
-                
+
                 //Katsotaan, riittääkö raha työntekijöiden palkkaamiseen
                 if (leiri.getRaha() < leiri.palautaPalkkoihinMenevaRaha(potkittavat)) {
                     JOptionPane.showMessageDialog(null, "GAME OVER, liian vähän rahaa");
@@ -159,6 +159,23 @@ public class Main extends Application implements Initializable {
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
 
+    }
+
+    private void tarkistaKentat() {
+        for (TextField kentta : kentat) {
+            if (!kentta.getText().isEmpty()) {
+                try {
+                    lisaaTyontekjoita.set(kentat.indexOf(kentta), Integer.parseInt(kentta.getText()));
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Syötteen täytyy olla numero tai tyhjä");
+                    kentta.requestFocus();
+                    voidaanSulkea = false;
+                    return;
+                }
+            }
+
+        }
+        voidaanSulkea = true;
     }
 
     @Override
@@ -226,7 +243,6 @@ public class Main extends Application implements Initializable {
         ObservableList<taulukkoTietue> OBnykyinen = FXCollections.observableArrayList(nykyinenTilanne);
         taulukot.get(1).setItems(OBnykyinen);
 
-    
     }
 
     private void valmisteleTaulukot() {
@@ -282,23 +298,6 @@ public class Main extends Application implements Initializable {
                 sliderit.get(i).setMax(maara * 3);
             }
         }
-    }
-
-    private void tarkistaKentat() {
-        for (TextField kentta : kentat) {
-            if (!kentta.getText().isEmpty()) {
-                try {
-                    lisaaTyontekjoita.set(kentat.indexOf(kentta), Integer.parseInt(kentta.getText()));
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, "Syötteen täytyy olla numero tai tyhjä");
-                    kentta.requestFocus();
-                    voidaanSulkea = false;
-                    return;
-                }
-            }
-
-        }
-        voidaanSulkea = true;
     }
 
 }
