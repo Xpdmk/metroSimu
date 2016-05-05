@@ -34,6 +34,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 public class Main extends Application implements Initializable {
 
     static Leiri leiri;
+    static TyontekijanakymanKasittelija tk;
     static ArrayList<Integer> lisaaTyontekjoita;
     static ArrayList<Slider> sliderit;
     static ArrayList<TextField> kentat;
@@ -55,6 +56,7 @@ public class Main extends Application implements Initializable {
         kaytettavienTyopaikkojenMaara = 2;
         maxTickShow = 5;
         maarat = new ArrayList<>(Collections.nCopies(kaytettavienTyopaikkojenMaara, 0));
+        tk = new TyontekijanakymanKasittelija();
 
         //Leirin valmistelu
         leiri = new Leiri();
@@ -184,7 +186,7 @@ public class Main extends Application implements Initializable {
         } else {
             return;
         }
-        kasittelePotkittavat(new TyontekijanakymanKasittelija().naytaMuunneltu(leiri.palautaTyontekijatTyopaikkaindksilla(numero), potkittavat, ikkunanOtsikko));
+        kasittelePotkittavat(tk.naytaMuunneltu(leiri.palautaTyontekijatTyopaikkaindksilla(numero), potkittavat, ikkunanOtsikko));
         paivitaTaulukot();
     }
 
@@ -194,6 +196,9 @@ public class Main extends Application implements Initializable {
                 for (Integer potkittava : potkittavat) {
                     if (pidetaanko.getKey().equals(potkittava)) {
                         potkittavat.remove(potkittava);
+                    }
+                    if (potkittavat.isEmpty()) {
+                        break;
                     }
                 }
             } else {
