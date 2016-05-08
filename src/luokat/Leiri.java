@@ -143,7 +143,7 @@ public class Leiri {
         }
     }
     
-    public double palautaPalkkoihinMenevaRaha(ArrayList<Integer> potkittavat, int lisattavat) {
+    public double palkkoihinMenevaRaha(ArrayList<Integer> potkittavat, int lisattavat) {
         double palkat = 0;
         for (Tyontekija tyontekija : tyontekijat) {
             if (!potkittavat.contains(tyontekija.getTyontekijakoodi())) {
@@ -202,7 +202,7 @@ public class Leiri {
         }
     }
 
-    public Integer palautaTyontekijoidenMaaraTyopaikkaindeksilla(int i) {
+    public Integer tyontekijoidenMaaraTyopaikkaindeksilla(int i) {
         int maara = 0;
         for (Tyontekija tyontekija : tyontekijat) {
             if (tyontekija.getTyopaikkaindeksi() == i) {
@@ -212,7 +212,7 @@ public class Leiri {
         return maara;
     }
 
-    public ArrayList<Tyontekija> palautaTyontekijatTyopaikkaindksilla(int i) {
+    public ArrayList<Tyontekija> tyontekijatTyopaikkaindksilla(int i) {
         ArrayList<Tyontekija> ahertajat = new ArrayList<>();
         for (Tyontekija tyontekija : tyontekijat) {
             if (tyontekija.getTyopaikkaindeksi() == i) {

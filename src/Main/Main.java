@@ -4,7 +4,6 @@ import Tyontekijanakyma.*;
 import luokat.Raportti;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +23,6 @@ import javafx.scene.control.TextField;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
 import javax.swing.JOptionPane;
-import static javafx.application.Application.launch;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -141,7 +139,7 @@ public class Main extends Application implements Initializable {
                 primaryStage.close();
 
                 //Katsotaan, riittääkö raha työntekijöiden palkkaamiseen
-                if (leiri.getRaha() < leiri.palautaPalkkoihinMenevaRaha(potkittavat, lisattavienMaara())) {
+                if (leiri.getRaha() < leiri.palkkoihinMenevaRaha(potkittavat, lisattavienMaara())) {
                     JOptionPane.showMessageDialog(null, "GAME OVER, liian vähän rahaa");
                     System.exit(0);
                 }
@@ -220,7 +218,7 @@ public class Main extends Application implements Initializable {
         } else {
             return;
         }
-        kasittelePotkittavat(tk.naytaMuunneltu(leiri.palautaTyontekijatTyopaikkaindksilla(numero), potkittavat, ikkunanOtsikko));
+        kasittelePotkittavat(tk.naytaMuunneltu(leiri.tyontekijatTyopaikkaindksilla(numero), potkittavat, ikkunanOtsikko));
         paivitaTaulukot();
     }
 
@@ -261,7 +259,7 @@ public class Main extends Application implements Initializable {
 
         //Täytetään oletettavien tapahtumien näyttävä taulukko (alin)
         ArrayList<taulukkoTietue> tulevat = new ArrayList<>();
-        double maksettavaPalkka = leiri.palautaPalkkoihinMenevaRaha(potkittavat, lisattavienMaara());
+        double maksettavaPalkka = leiri.palkkoihinMenevaRaha(potkittavat, lisattavienMaara());
         tulevat.add(new taulukkoTietue("Palkkoihin menevä raha", "" + maksettavaPalkka));
         ObservableList<taulukkoTietue> OBtulevat = FXCollections.observableArrayList(tulevat);
         taulukot.get(2).setItems(OBtulevat);
@@ -295,7 +293,7 @@ public class Main extends Application implements Initializable {
 
     private void paivitaTyontekijatekstit() {
         for (int i = 0; i < maarat.size(); i++) {
-            maarat.set(i, leiri.palautaTyontekijoidenMaaraTyopaikkaindeksilla(i + 1));
+            maarat.set(i, leiri.tyontekijoidenMaaraTyopaikkaindeksilla(i + 1));
             if (!tekstit.get(i).isDisabled()) {
                 tekstit.get(i).setText("Työntekijät: " + maarat.get(i));
             }
