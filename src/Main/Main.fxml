@@ -74,10 +74,14 @@
                         <Insets />
                      </HBox.margin>
                   </VBox>
-                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                  <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                      <children>
+                        <Label text="Vuoron aikana tapahtuneet:" />
                         <TableView fx:id="taulukko0" prefHeight="412.0" prefWidth="493.0" />
+                        <Label text="Nykyinen tilanne:" />
                         <TableView fx:id="taulukko1" />
+                        <Label text="Oletettavat muutokset seuraavan vuoron aikana:" />
+                        <TableView fx:id="taulukko2" />
                      </children>
                   </VBox>
                </children>

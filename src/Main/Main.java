@@ -79,7 +79,7 @@ public class Main extends Application implements Initializable {
         taulukot = new ArrayList<>();
 
         //Valmistele taulukot
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 3; i++) {
             taulukot.add((TableView) root.lookup("#taulukko" + i));
         }
 
@@ -242,26 +242,29 @@ public class Main extends Application implements Initializable {
     }
 
     private void paivitaTaulukot() {
+        //Täytetään vuoron aikana tapahtumien näyttävä taulukko (ylin)
         ArrayList<taulukkoTietue> vuoronTapahtumat = new ArrayList<>();
-
         vuoronTapahtumat.add(new taulukkoTietue("Hakattu puu", "" + viimeisinRaportti.getSaatuPuu()));
         vuoronTapahtumat.add(new taulukkoTietue("Metsästetty aterioita", "" + viimeisinRaportti.getSaadutAteriat()));
         vuoronTapahtumat.add(new taulukkoTietue("Myyntitulot", "" + viimeisinRaportti.getMyyntitulot()));
         ObservableList<taulukkoTietue> OBtapahtumat = FXCollections.observableArrayList(vuoronTapahtumat);
         taulukot.get(0).setItems(OBtapahtumat);
 
+        //Täytetään nykyisen tilanteen näyttävä taulukko (keskimmäinen)
         ArrayList<taulukkoTietue> nykyinenTilanne = new ArrayList<>();
-
-        nykyinenTilanne.add(new taulukkoTietue("Raha", "" + leiri.getRaha()));
+        nykyinenTilanne.add(new taulukkoTietue("Metsän puiden määrä", "" + leiri.getMetsanKoko()));
         nykyinenTilanne.add(new taulukkoTietue("Puu", "" + leiri.getPuu()));
         nykyinenTilanne.add(new taulukkoTietue("Ateriat", "" + leiri.getAterioidenMaara()));
-        double maksettavaPalkka = leiri.palautaPalkkoihinMenevaRaha(potkittavat, lisattavienMaara());
-
-        nykyinenTilanne.add(new taulukkoTietue("Palkkoihin menevä raha", "" + maksettavaPalkka));
-
+        nykyinenTilanne.add(new taulukkoTietue("Raha", "" + leiri.getRaha()));
         ObservableList<taulukkoTietue> OBnykyinen = FXCollections.observableArrayList(nykyinenTilanne);
         taulukot.get(1).setItems(OBnykyinen);
 
+        //Täytetään oletettavien tapahtumien näyttävä taulukko (alin)
+        ArrayList<taulukkoTietue> tulevat = new ArrayList<>();
+        double maksettavaPalkka = leiri.palautaPalkkoihinMenevaRaha(potkittavat, lisattavienMaara());
+        tulevat.add(new taulukkoTietue("Palkkoihin menevä raha", "" + maksettavaPalkka));
+        ObservableList<taulukkoTietue> OBtulevat = FXCollections.observableArrayList(tulevat);
+        taulukot.get(2).setItems(OBtulevat);
     }
 
     private void valmisteleTaulukot() {

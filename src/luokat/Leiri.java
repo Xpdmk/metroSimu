@@ -237,4 +237,8 @@ public class Leiri {
     public void setOletusPalkka(int oletusPalkka) {
         this.oletusPalkka = oletusPalkka;
     }
+    
+    public int getMetsanKoko() {
+        return metsa.getPuidenMaara();
+    }
 }
