@@ -3,6 +3,9 @@ package luokat;
 import java.util.ArrayList;
 import java.util.Random;
 import java.lang.Math;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Leiri {
 
@@ -18,10 +21,12 @@ public class Leiri {
     private ArrayList<Integer> vuoronToheloijienKoodit;
     private int vuoronSaadutAteriat;
     private int vuoronSaatuPuu;
+    private ArrayList<Integer> vuoronPotkittavat;
+    private ArrayList<Integer> vuoronPalkattavat;
     private ArrayList<Tyontekija> vuoronKuolleet;
     private int onnettomuusCooldown;
     private int todnakOnnettomuuskuolema; //Prosentti
-    private Random randomaattori;
+    private final Random randomaattori;
     //private Map<String, int> mineraalienMaara;
     private ArrayList<Raportti> raportit;
 
@@ -35,6 +40,8 @@ public class Leiri {
         this.raportit = new ArrayList();
         this.oletusPalkka = 10;
         this.vuoronToheloijienKoodit = new ArrayList<>();
+        this.vuoronPotkittavat = new ArrayList<>(Collections.nCopies(4, 0));
+        this.vuoronPalkattavat = new ArrayList<>(Collections.nCopies(4, 0));
         this.vuoronSaadutAteriat = 0;
         this.vuoronSaatuPuu = 0;
         this.todnakOnnettomuuskuolema = 10;
@@ -66,6 +73,32 @@ public class Leiri {
         vuoronSaadutAteriat = 0;
         vuoronSaatuPuu = 0;
         vuoronKuolleet = new ArrayList<>();
+        
+        //Potkitaan tyontekijat
+        for (int i = 0; i < vuoronPotkittavat.size(); i++) {
+            for (Tyontekija tyontekija : tyontekijat) {
+                if (tyontekija.getTyontekijakoodi() == vuoronPotkittavat.get(i)) {
+                    tyontekijat.remove(tyontekija);
+                    break;
+                }
+            }
+        }
+        
+        vuoronPotkittavat = new ArrayList<>();
+        
+        //Palkataan uudet tyontekijat
+        for (int i = 0; i < vuoronPalkattavat.size(); i++) {
+            if (vuoronPalkattavat.get(i) != 0) {
+                for (int k = 0; k < vuoronPalkattavat.get(i); k++) {
+                    palkkaaTyontekija(i);
+                }
+            }
+            
+                
+        }
+        
+        vuoronPalkattavat = new ArrayList<>(Collections.nCopies(4, 0));
+        vuoronPotkittavat = new ArrayList<>(Collections.nCopies(4, 0));
 
         kasitteleCooldown();
         laskeVelat();
@@ -143,15 +176,17 @@ public class Leiri {
         }
     }
     
-    public double palkkoihinMenevaRaha(ArrayList<Integer> potkittavat, int lisattavat) {
+    public double palkkoihinMenevaRaha() {
         double palkat = 0;
         for (Tyontekija tyontekija : tyontekijat) {
-            if (!potkittavat.contains(tyontekija.getTyontekijakoodi())) {
+            if (!vuoronPotkittavat.contains(tyontekija.getTyontekijakoodi())) {
                 palkat += tyontekija.getPalkka();
             }
             
         }
-        palkat += lisattavat*oletusPalkka;
+        for (Integer i : vuoronPalkattavat) {
+            palkat += i*oletusPalkka;
+        }
         return palkat;
     }
 
@@ -164,7 +199,7 @@ public class Leiri {
 
     }
 
-    public void palkkaaTyontekija(int tyopaikkaindeksi) {
+    private void palkkaaTyontekija(int tyopaikkaindeksi) {
         int seuraavaTyontekijakoodi = 1;
         ALKU:
         while (true) {
@@ -190,16 +225,6 @@ public class Leiri {
             uusi = new Tyontekija(randomaattori.nextDouble() * 0.2, (int) tehokkuus, seuraavaTyontekijakoodi, tyopaikkaindeksi, oletusPalkka, 0);
         }
         tyontekijat.add(uusi);
-    }
-
-    public void poistaTyontekijat(ArrayList<Integer> tyontekijakoodit) {
-        for (Integer koodi : tyontekijakoodit) {
-            for (int i = 0; i < tyontekijat.size(); i++) {
-                if (tyontekijat.get(i).getTyontekijakoodi() == koodi) {
-                    tyontekijat.remove(i);
-                }
-            }
-        }
     }
 
     public Integer tyontekijoidenMaaraTyopaikkaindeksilla(int i) {
@@ -240,5 +265,48 @@ public class Leiri {
     
     public int getMetsanKoko() {
         return metsa.getPuidenMaara();
+    }
+    
+    public ArrayList<Integer> tyontekijoidenMaarat() {
+        ArrayList<Integer> maarat = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            int tyontekijoidenMaaraIndeksilla = 0;
+            for (Tyontekija tyontekija : tyontekijat) {
+                if (tyontekija.getTyopaikkaindeksi() == i) {
+                    tyontekijoidenMaaraIndeksilla++;
+                }
+            }
+            maarat.add(tyontekijoidenMaaraIndeksilla);
+        }
+        return maarat;
+    }
+    
+    public void setPalkattavienMaaraTyonpaikkaindeksilla(int tyopaikkaindeksi, int maara) {
+        vuoronPalkattavat.set(tyopaikkaindeksi, maara);
+    }
+    
+    public int getPalkattavienMaaraTyonpaikkaindeksilla(int tyopaikkaindeksi) {
+        return vuoronPalkattavat.get(tyopaikkaindeksi);
+    }
+    
+    public void kasittelePotkittavat(HashMap<Integer, Boolean> muutetut) {
+        for (Map.Entry<Integer, Boolean> pidetaanko : muutetut.entrySet()) {
+            if (pidetaanko.getValue()) {
+                for (Integer potkittava : vuoronPotkittavat) {
+                    if (pidetaanko.getKey().equals(potkittava)) {
+                        vuoronPotkittavat.remove(potkittava);
+                    }
+                    if (vuoronPotkittavat.isEmpty()) {
+                        break;
+                    }
+                }
+            } else {
+                vuoronPotkittavat.add(pidetaanko.getKey());
+            }
+        }
+    }
+    
+    public ArrayList<Integer> getPotkittavat() {
+        return vuoronPotkittavat;
     }
 }

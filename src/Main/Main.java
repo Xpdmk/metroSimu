@@ -33,12 +33,9 @@ public class Main extends Application implements Initializable {
 
     static Leiri leiri;
     static TyontekijanakymanKasittelija tk;
-    static ArrayList<Integer> lisaaTyontekjoita;
     static ArrayList<Slider> sliderit;
     static ArrayList<TextField> kentat;
-    static ArrayList<Integer> maarat;
     static ArrayList<Label> tekstit;
-    static ArrayList<Integer> potkittavat;
     static ArrayList<TableView> taulukot;
     static Raportti viimeisinRaportti;
     static boolean voidaanSulkea;
@@ -53,7 +50,6 @@ public class Main extends Application implements Initializable {
         voidaanSulkea = true;
         kaytettavienTyopaikkojenMaara = 2;
         maxTickShow = 5;
-        maarat = new ArrayList<>(Collections.nCopies(kaytettavienTyopaikkojenMaara, 0));
         tk = new TyontekijanakymanKasittelija();
 
         //Leirin valmistelu
@@ -68,9 +64,7 @@ public class Main extends Application implements Initializable {
     public void start(Stage primaryStage) throws Exception {
         //Main.fxml tiedoston lataus samasta kansiosta
         root = FXMLLoader.load(getClass().getResource("Main.fxml"));
-
-        lisaaTyontekjoita = new ArrayList<>(Collections.nCopies(kaytettavienTyopaikkojenMaara, 0));
-        potkittavat = new ArrayList<>();
+        
         sliderit = new ArrayList<>();
         kentat = new ArrayList<>();
         tekstit = new ArrayList<>();
@@ -97,7 +91,7 @@ public class Main extends Application implements Initializable {
                 ////Lisätään kuuntelija, joka muuttaa lisaaTyontekijoita-listan arvoa, kun Slideria liikutetaan
                 slider.valueProperty().addListener((ObservableValue<? extends Number> arvo, Number vanha, Number uusi) -> {
                     if (vanha.intValue() != uusi.intValue()) {
-                        lisaaTyontekjoita.set(sliderit.indexOf(slider), (int) arvo.getValue().intValue());
+                        leiri.setPalkattavienMaaraTyonpaikkaindeksilla((sliderit.indexOf(slider)+1), (int) arvo.getValue().intValue());
                         paivitaKentta(sliderit.indexOf(slider));
                         paivitaTaulukot();
                     }
@@ -123,7 +117,7 @@ public class Main extends Application implements Initializable {
                         if (!uusi.isEmpty() && tarkistaKentat(false)) {
                             uusiArvo = Integer.parseInt(kentta.getText());
                         }
-                        lisaaTyontekjoita.set(kentat.indexOf(kentta), uusiArvo);
+                        leiri.setPalkattavienMaaraTyonpaikkaindeksilla(kentat.indexOf(kentta)+1, uusiArvo);
                         paivitaTaulukot();
                     }
                 });
@@ -139,20 +133,9 @@ public class Main extends Application implements Initializable {
                 primaryStage.close();
 
                 //Katsotaan, riittääkö raha työntekijöiden palkkaamiseen
-                if (leiri.getRaha() < leiri.palkkoihinMenevaRaha(potkittavat, lisattavienMaara())) {
+                if (leiri.getRaha() < leiri.palkkoihinMenevaRaha()) {
                     JOptionPane.showMessageDialog(null, "GAME OVER, liian vähän rahaa");
                     System.exit(0);
-                }
-
-                //Potkitaan ulos tyontekijat
-                leiri.poistaTyontekijat(potkittavat);
-
-                //Palkataan työntekijät käyttäjän syöttöjen mukaan
-                for (int i = 0; i < lisaaTyontekjoita.size(); i++) {
-
-                    for (int k = 0; k < lisaaTyontekjoita.get(i); k++) {
-                        leiri.palkkaaTyontekija(i + 1);
-                    }
                 }
 
                 leiri.kasittele();
@@ -178,7 +161,7 @@ public class Main extends Application implements Initializable {
         for (TextField kentta : kentat) {
             if (!kentta.getText().isEmpty()) {
                 try {
-                    lisaaTyontekjoita.set(kentat.indexOf(kentta), Integer.parseInt(kentta.getText()));
+                    leiri.setPalkattavienMaaraTyonpaikkaindeksilla(kentat.indexOf(kentta)+1, Integer.parseInt(kentta.getText()));
                 } catch (Exception e) {
                     if (ilmoitetaan) {
                         JOptionPane.showMessageDialog(null, "Syötteen täytyy olla numero tai tyhjä");
@@ -218,25 +201,8 @@ public class Main extends Application implements Initializable {
         } else {
             return;
         }
-        kasittelePotkittavat(tk.naytaMuunneltu(leiri.tyontekijatTyopaikkaindksilla(numero), potkittavat, ikkunanOtsikko));
+        leiri.kasittelePotkittavat(tk.naytaMuunneltu(leiri.tyontekijatTyopaikkaindksilla(numero), leiri.getPotkittavat(), ikkunanOtsikko));
         paivitaTaulukot();
-    }
-
-    private void kasittelePotkittavat(HashMap<Integer, Boolean> muutetut) {
-        for (Map.Entry<Integer, Boolean> pidetaanko : muutetut.entrySet()) {
-            if (pidetaanko.getValue()) {
-                for (Integer potkittava : potkittavat) {
-                    if (pidetaanko.getKey().equals(potkittava)) {
-                        potkittavat.remove(potkittava);
-                    }
-                    if (potkittavat.isEmpty()) {
-                        break;
-                    }
-                }
-            } else {
-                potkittavat.add(pidetaanko.getKey());
-            }
-        }
     }
 
     private void paivitaTaulukot() {
@@ -259,7 +225,7 @@ public class Main extends Application implements Initializable {
 
         //Täytetään oletettavien tapahtumien näyttävä taulukko (alin)
         ArrayList<taulukkoTietue> tulevat = new ArrayList<>();
-        double maksettavaPalkka = leiri.palkkoihinMenevaRaha(potkittavat, lisattavienMaara());
+        double maksettavaPalkka = leiri.palkkoihinMenevaRaha();
         tulevat.add(new taulukkoTietue("Palkkoihin menevä raha", "" + maksettavaPalkka));
         ObservableList<taulukkoTietue> OBtulevat = FXCollections.observableArrayList(tulevat);
         taulukot.get(2).setItems(OBtulevat);
@@ -280,30 +246,24 @@ public class Main extends Application implements Initializable {
 
     }
 
-    private void paivitaKentat() {
-        for (int i = 0; i < kentat.size(); i++) {
-            kentat.get(i).setText("" + lisaaTyontekjoita.get(i));
-
-        }
-    }
-
     private void paivitaKentta(int i) {
-        kentat.get(i).setText("" + lisaaTyontekjoita.get(i));
+        kentat.get(i).setText("" + leiri.getPalkattavienMaaraTyonpaikkaindeksilla(i+1));
     }
 
     private void paivitaTyontekijatekstit() {
-        for (int i = 0; i < maarat.size(); i++) {
-            maarat.set(i, leiri.tyontekijoidenMaaraTyopaikkaindeksilla(i + 1));
+        ArrayList<Integer> maarat = leiri.tyontekijoidenMaarat();
+        for (int i = 0; i < kaytettavienTyopaikkojenMaara; i++) {
             if (!tekstit.get(i).isDisabled()) {
-                tekstit.get(i).setText("Työntekijät: " + maarat.get(i));
+                int maara = maarat.get(i+1);
+                tekstit.get(i).setText("Työntekijät: " + maara) ;
             }
         }
     }
 
     private void paivitaLisaaelementit() {
-
-        for (int i = 0; i < maarat.size(); i++) {
-            int maara = maarat.get(i);
+        ArrayList<Integer> maarat = leiri.tyontekijoidenMaarat();
+        for (int i = 0; i < kaytettavienTyopaikkojenMaara; i++) {
+            int maara = maarat.get(i+1);
             Slider slider = sliderit.get(i);
             slider.setMin(0);
             slider.setBlockIncrement(1);
@@ -318,14 +278,6 @@ public class Main extends Application implements Initializable {
                 sliderit.get(i).setMax(maara * 3);
             }
         }
-    }
-
-    private Integer lisattavienMaara() {
-        int maara = 0;
-        for (Integer lisattava : lisaaTyontekjoita) {
-            maara += lisattava;
-        }
-        return maara;
     }
 
 }
