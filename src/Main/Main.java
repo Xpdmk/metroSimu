@@ -48,7 +48,7 @@ public class Main extends Application implements Initializable {
     static Parent root;
 
     public static void main(String[] args) {
-        //Pääikkunan valmistelu ja avaus
+        //Paaikkunan valmistelu ja avaus
         tyopaikkojenMaara = 3;
         voidaanSulkea = true;
         kaytettavienTyopaikkojenMaara = 2;
@@ -59,12 +59,12 @@ public class Main extends Application implements Initializable {
         //Olioiden valmistelu
         leiri = new Leiri();
         kauppa = new Kauppa();
-
+        
         launch(args);
 
     }
 
-    //Javafx suorittaa tämän metodien, kun main-metodin launch(args) suoritetaan
+    //JavaFX suorittaa taman metodien, kun main-metodin launch(args) suoritetaan
     @Override
     public void start(Stage primaryStage) throws Exception {
         //Main.fxml tiedoston lataus samasta kansiosta
@@ -93,7 +93,7 @@ public class Main extends Application implements Initializable {
                 //Haetaan Slider-elementti
                 Slider slider = (Slider) root.lookup("#slider" + i);
                 sliderit.add(slider);
-                ////Lisätään kuuntelija, joka muuttaa lisaaTyontekijoita-listan arvoa, kun Slideria liikutetaan
+                ////Lisataan kuuntelija, joka muuttaa lisaaTyontekijoita-listan arvoa, kun Slideria liikutetaan
                 slider.valueProperty().addListener((ObservableValue<? extends Number> arvo, Number vanha, Number uusi) -> {
                     if (vanha.intValue() != uusi.intValue()) {
                         leiri.setPalkattavienMaaraTyonpaikkaindeksilla((sliderit.indexOf(slider) + 1), (int) arvo.getValue().intValue());
@@ -102,11 +102,11 @@ public class Main extends Application implements Initializable {
                     }
                 });
 
-                //Valmistellaan tekstikenttä-elementti
+                //Valmistellaan tekstikentta-elementti
                 TextField kentta = (TextField) root.lookup("#lisaaKentta" + i);
                 kentat.add(kentta);
                 kentta.setPromptText("Montako palkataan?");
-                ////Lisätään kuuntelija, joka tarkistaa, onko syöte numero
+                ////Lisataan kuuntelija, joka tarkistaa, onko syote numero
                 kentta.focusedProperty().addListener((arvo, vanha, uusi) -> {
                     if (vanha && !kentta.getText().isEmpty()) {
                         if (tarkistaKentat(true)) {
@@ -130,14 +130,14 @@ public class Main extends Application implements Initializable {
             }
 
         }
-        //Nappien toimintojen määritteleminen
+        //Nappien toimintojen maaritteleminen
         Button suoritaNappi = (Button) root.lookup("#suorita");
         suoritaNappi.setOnAction(e -> {
             if (voidaanSulkea) {
                 //Suljetaan ikkuna
                 primaryStage.close();
 
-                //Katsotaan, riittääkö raha työntekijöiden palkkaamiseen
+                //Katsotaan, riittaako raha tyontekijoiden palkkaamiseen
                 if (voidaanHavita && leiri.getRaha() < leiri.palkkoihinMenevaRaha()) {
                     JOptionPane.showMessageDialog(null, "GAME OVER, liian vähän rahaa");
                     System.exit(0);
@@ -161,7 +161,7 @@ public class Main extends Application implements Initializable {
             paivitaTaulukot();
         });
 
-        //Ikkunan valmistelut ja näyttö
+        //Ikkunan valmistelut ja naytto
         paivitaTyontekijatekstit();
         paivitaLisaaelementit();
         primaryStage.setTitle("Resurssienkeruusimulaattori");
@@ -177,7 +177,7 @@ public class Main extends Application implements Initializable {
                     leiri.setPalkattavienMaaraTyonpaikkaindeksilla(kentat.indexOf(kentta) + 1, Integer.parseInt(kentta.getText()));
                 } catch (Exception e) {
                     if (ilmoitetaan) {
-                        JOptionPane.showMessageDialog(null, "Syötteen täytyy olla numero tai tyhjä");
+                        JOptionPane.showMessageDialog(null, "Syotteen täytyy olla numero tai tyhjä");
                         kentta.requestFocus();
                     }
 
@@ -194,23 +194,23 @@ public class Main extends Application implements Initializable {
 
     }
 
-    //Pääikkunassa napit, joissa lukee "Tutki työntekijöitä", kutsuvat tätä metodia.
-    //Metodiin haettu apua täältä: http://stackoverflow.com/questions/25409044/javafx-multiple-buttons-to-same-handler
+    //Paaikkunassa napit, joissa lukee "Tutki tyontekijoita", kutsuvat tata metodia.
+    //Metodiin haettu apua taalta: http://stackoverflow.com/questions/25409044/javafx-multiple-buttons-to-same-handler
     @FXML
     public void tutkiTyolaisia(ActionEvent event) throws Exception {
         Button kutsuja = (Button) event.getSource();
         int numero;
         String ikkunanOtsikko;
-        //Selvitetään, mitä bt-nappia painettiin
+        //Selvitetaan, mita bt-nappia painettiin
         if (kutsuja.getId().equals("bt1")) {
             numero = 1;
-            ikkunanOtsikko = "Metsätyöläiset";
+            ikkunanOtsikko = "Metsätyoläiset";
         } else if (kutsuja.getId().equals("bt2")) {
             numero = 2;
             ikkunanOtsikko = "Metsästäjät";
         } else if (kutsuja.getId().equals("bt3")) {
             numero = 3;
-            ikkunanOtsikko = "Kaivostyöläiset";
+            ikkunanOtsikko = "Kaivostyoläiset";
         } else {
             return;
         }
@@ -219,7 +219,7 @@ public class Main extends Application implements Initializable {
     }
 
     private void paivitaTaulukot() {
-        //Täytetään vuoron aikana tapahtumien näyttävä taulukko (ylin)
+        //Taytetaan vuoron aikana tapahtumien nayttava taulukko (ylin)
         ArrayList<Paanakymarivi> vuoronTapahtumat = new ArrayList<>();
         vuoronTapahtumat.add(new Paanakymarivi("Hakattu puu", "" + viimeisinRaportti.getSaatuPuu()));
         vuoronTapahtumat.add(new Paanakymarivi("Metsästetty aterioita", "" + viimeisinRaportti.getSaadutAteriat()));
@@ -230,7 +230,7 @@ public class Main extends Application implements Initializable {
         ObservableList<Paanakymarivi> OBtapahtumat = FXCollections.observableArrayList(vuoronTapahtumat);
         taulukot.get(0).setItems(OBtapahtumat);
 
-        //Täytetään nykyisen tilanteen näyttävä taulukko (keskimmäinen)
+        //Taytetaan nykyisen tilanteen nayttava taulukko (keskimmainen)
         ArrayList<Paanakymarivi> nykyinenTilanne = new ArrayList<>();
         nykyinenTilanne.add(new Paanakymarivi("Metsän puiden määrä", "" + leiri.getMetsanKoko()));
         nykyinenTilanne.add(new Paanakymarivi("Puu", "" + leiri.getPuu()));
@@ -239,7 +239,7 @@ public class Main extends Application implements Initializable {
         ObservableList<Paanakymarivi> OBnykyinen = FXCollections.observableArrayList(nykyinenTilanne);
         taulukot.get(1).setItems(OBnykyinen);
 
-        //Täytetään oletettavien tapahtumien näyttävä taulukko (alin)
+        //Taytetaan oletettavien tapahtumien nayttava taulukko (alin)
         ArrayList<Paanakymarivi> tulevat = new ArrayList<>();
         double maksettavaPalkka = leiri.palkkoihinMenevaRaha();
         tulevat.add(new Paanakymarivi("Palkkoihin menevä raha", "" + maksettavaPalkka));
@@ -271,7 +271,7 @@ public class Main extends Application implements Initializable {
         for (int i = 0; i < kaytettavienTyopaikkojenMaara; i++) {
             if (!tekstit.get(i).isDisabled()) {
                 int maara = maarat.get(i + 1);
-                tekstit.get(i).setText("Työntekijät: " + maara);
+                tekstit.get(i).setText("Tyontekijät: " + maara);
             }
         }
     }

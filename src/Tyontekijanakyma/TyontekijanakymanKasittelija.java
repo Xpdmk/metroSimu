@@ -42,9 +42,9 @@ public class TyontekijanakymanKasittelija implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
     }
-    
-    private void valmistele(String ikkunanOtsikko){
-        //Käsittelyn valmistelu
+
+    private void valmistele(String ikkunanOtsikko) {
+        //Kasittelyn valmistelu
         muutoksetTallennetaan = true;
 
         //Valmistellaan ikkuna
@@ -56,21 +56,21 @@ public class TyontekijanakymanKasittelija implements Initializable {
             e.consume();
             JOptionPane.showMessageDialog(null, "Paina Hyväksy tai Peruuta palataksesi pääikkunaan");
         });
-        
+
         //Tuodaan asettelu-muuttujaan asettelu sijainnista
         try {
             asettelu = FXMLLoader.load(this.getClass().getResource("/Tyontekijanakyma/Tyontekijanakyma.fxml"));
         } catch (Exception e) {
-            System.out.println(getClass().getName() + " ei löytänyt asettelua");
+            System.out.println(getClass().getName() + " ei loytänyt asettelua");
             System.exit(0);
         }
-        
+
         //Haetaan asettelusta napit ja talukko
         hyvaksy = (Button) asettelu.lookup("#hyvaksy");
         peruuta = (Button) asettelu.lookup("#peruuta");
         taulukko = (TableView) asettelu.lookup("#tTaulukko");
 
-        //Määritetään, mitä tehdään, kun nappeja painetaan
+        //Maaritetaan, mita tehdaan, kun nappeja painetaan
         hyvaksy.setOnAction(e -> {
             ikkuna.close();
         });
@@ -79,33 +79,33 @@ public class TyontekijanakymanKasittelija implements Initializable {
             muutoksetTallennetaan = false;
         });
 
-        //Sarakkeet luodaan näyttöä varten
-        //Työntekijäkoodi -sarake
+        //Sarakkeet luodaan nayttoa varten
+        //Tyontekijakoodi -sarake
         tyontekijakoodiSarake = new TableColumn("Tyontekijakoodi");
         tyontekijakoodiSarake.setMinWidth(100);
         tyontekijakoodiSarake.setCellValueFactory(new PropertyValueFactory<>("tyontekijakoodi"));
 
-        //Työntekijän tehokkuus -sarake
+        //Tyontekijan tehokkuus -sarake
         resurssitSarake = new TableColumn("Resurssit");
         resurssitSarake.setMinWidth(100);
         resurssitSarake.setCellValueFactory(new PropertyValueFactory<>("resurssit"));
-        
-        //Työntekijän palkka -sarake
+
+        //Tyontekijan palkka -sarake
         palkkaSarake = new TableColumn("Palkka");
         palkkaSarake.setMinWidth(100);
         palkkaSarake.setCellValueFactory(new PropertyValueFactory<>("palkka"));
 
-        //Työntekijän tohelointien määrä -sarake
+        //Tyontekijan tohelointien maara -sarake
         toheloinnitSarake = new TableColumn<>("Toheloinnit");
         toheloinnitSarake.setMinWidth(100);
         toheloinnitSarake.setCellValueFactory(new PropertyValueFactory<>("toheloinnit"));
 
         //Sarake valintaruutuja varten
-        valintaruutuSarake = new TableColumn<>("Pidä työntekijä");
+        valintaruutuSarake = new TableColumn<>("Pidä tyontekijä");
         valintaruutuSarake.setMinWidth(30);
         valintaruutuSarake.setCellValueFactory(new PropertyValueFactory<>("valintaruutu"));
-        
-        //Lisätään sarakkeet taulukkoon
+
+        //Lisataan sarakkeet taulukkoon
         taulukko.getColumns().addAll(tyontekijakoodiSarake, resurssitSarake, palkkaSarake, toheloinnitSarake, valintaruutuSarake);
     }
 
@@ -116,10 +116,10 @@ public class TyontekijanakymanKasittelija implements Initializable {
         for (Tyontekija tyontekija : tyontekijat) {
             rivit.add(new Tyontekijanakymarivi(tyontekija.getTyontekijakoodi(), tyontekija.getKeratytResurssit(), tyontekija.getPalkka(), tyontekija.getToheloinnit()));
         }
-        
+
         return avaaIkkuna(rivit);
     }
-    
+
     public HashMap<Integer, Boolean> naytaMuunneltu(ArrayList<Tyontekija> tyontekijat, ArrayList<Integer> muunnelmat, String ikkunanOtsikko) {
         valmistele(ikkunanOtsikko);
         //Taulukon valmistelu
@@ -133,27 +133,29 @@ public class TyontekijanakymanKasittelija implements Initializable {
             }
             rivit.add(rivi);
         }
-        
+
         return avaaIkkuna(rivit);
     }
-    
+
     private HashMap<Integer, Boolean> avaaIkkuna(ArrayList<Tyontekijanakymarivi> rivit) {
+        //Tehdaan ArrayListista ObservableList, jonka TableView osaa nayttaa
         ObservableList<Tyontekijanakymarivi> OBTyontekijanakymarivit = FXCollections.observableArrayList(rivit);
-        
-        //Lisätään lista riveistä
+
+        //Lisataan lista riveista
         taulukko.setItems(OBTyontekijanakymarivit);
-        
+
+        //Viimeistellaan ja avataan ikkuna
         ikkuna.setScene(new Scene(asettelu, 600, 700));
         ikkuna.showAndWait();
-        
+
+        //Varmistetaan, tallennetaanko kayttajan muutokset
         HashMap<Integer, Boolean> tyontekijamuutokset = new HashMap<>();
         if (muutoksetTallennetaan) {
             for (Tyontekijanakymarivi rivi : rivit) {
-            tyontekijamuutokset.put(rivi.getTyontekijakoodi(), rivi.getValintaruutu().isSelected());
+                tyontekijamuutokset.put(rivi.getTyontekijakoodi(), rivi.getValintaruutu().isSelected());
+            }
         }
-        }
-        
-        
+
         return tyontekijamuutokset;
     }
 

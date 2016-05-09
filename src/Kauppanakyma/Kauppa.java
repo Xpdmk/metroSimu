@@ -40,32 +40,38 @@ public class Kauppa {
     }
 
     public HashMap<String, double[]> avaa(HashMap<String, Integer> tuotteidenMaarat) {
+        //Alustetaan muuttujat
         HashMap<String, double[]> palautus = new HashMap<>();
         tuotteidenHinnat = new HashMap<>();
         tuotteidenNimet = new ArrayList<>();
         muutoksetTallennetaan = true;
-
+        
+        //Ikkunan Valmistelu
         ikkuna = new Stage();
         ikkuna.setTitle("Kauppa");
         ikkuna.initModality(Modality.APPLICATION_MODAL);
-
+        
+        //Yritetaan hakea FXML-tiedosto
         try {
             asettelu = FXMLLoader.load(this.getClass().getResource("/Kauppanakyma/Kauppanakyma.fxml"));
         } catch (Exception e) {
-            System.out.println(getClass().getName() + " ei löytänyt asettelua");
+            System.out.println(getClass().getName() + " ei loytänyt asettelua");
             System.exit(0);
         }
-
+        
+        //Haetaan elementit
         myy = (Button) asettelu.lookup("#myyNappi");
         peruuta = (Button) asettelu.lookup("#peruutaNappi");
         tulot = (Label) asettelu.lookup("#tulotTeksti");
         taulukko = (TableView) asettelu.lookup("#tuotteetTaulukko");
-
+        
+        //Asetetaan Peruuta-napille toiminto
         peruuta.setOnAction(e -> {
             ikkuna.close();
             muutoksetTallennetaan = false;
         });
-
+        
+        //Asetetaan Myy-napille toiminto
         myy.setOnAction(e -> {
             int tarkistettavaRivi = tarkistaMyytavienMaarat();
             if (tarkistettavaRivi >= 0) {
@@ -74,7 +80,8 @@ public class Kauppa {
                 ikkuna.close();
             }
         });
-
+        
+        //Valmistellaan sarakkeet
         TableColumn<Kauppatuoterivi, String> nimiSarake = new TableColumn("Tuote");
         nimiSarake.setMinWidth(100);
         nimiSarake.setCellValueFactory(new PropertyValueFactory<>("tuotteenNimi"));
@@ -88,9 +95,10 @@ public class Kauppa {
         hintaSarake.setCellValueFactory(new PropertyValueFactory<>("tuotteenHinta"));
 
         TableColumn<Kauppatuoterivi, TextField> syoteSarake = new TableColumn("Myydään");
-        syoteSarake.setMinWidth(100);
+        syoteSarake.setMinWidth(200);
         syoteSarake.setCellValueFactory(new PropertyValueFactory<>("syote"));
-
+        
+        //Asetetaan sarakkeet taulukkoon
         taulukko.getColumns().addAll(nimiSarake, maaraSarake, hintaSarake, syoteSarake);
 
         //Haetaan tuotteiden nimet
@@ -110,18 +118,21 @@ public class Kauppa {
                 default:
                     hinta = 0;
             }
+            //Lisataan hinta muistiin
             tuotteidenHinnat.put(tuotteenNimi, hinta);
-
+            
             tuoterivit.add(new Kauppatuoterivi(tuotteenNimi, tuotteidenMaarat.get(tuotteenNimi), hinta));
         }
-
+        //Tehdaan ArrayListista ObservableList, jonka TableView osaa nayttaa
         ObservableList<Kauppatuoterivi> OBtuoterivit = FXCollections.observableArrayList(tuoterivit);
-
+        //Asetetaan taulukon rivit ObservableListilla
         taulukko.setItems(OBtuoterivit);
-
+        
+        //Ikkunan viimeistely ja avaus
         ikkuna.setScene(new Scene(asettelu));
         ikkuna.showAndWait();
-
+        
+        //Varmistetaan, tallennetaanko kayttajan muutokset
         if (muutoksetTallennetaan) {
             for (int i = 0; i < tuotteidenNimet.size(); i++) {
                 double[] maaraJaHinta = new double[2];

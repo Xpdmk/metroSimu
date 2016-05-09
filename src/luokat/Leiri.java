@@ -61,14 +61,9 @@ public class Leiri {
     }
 
     public void kasittele() {
-        /**
-         * metodi ottaa huomioon leirilla olevien tyontekijat, niiden maaran
-         * seka tyopaikan, mihin ne on sijoitettu, ja laskee tyopaikoilla
-         * tapahtuneet mahdolliset onnettomuudet, resurssien, kuten ruoan, puun
-         * ja mineraalien, tulon maaran, maksaa palkat ja ruokkii tyontekijat.
-         * Naista tehdaan uusi Raportti-olio raporttilistaan.
-         */
+        //Kasittelee vuoron tapahtumat
 
+        //Muuttujien valmistelut
         vuoronToheloijienKoodit = new ArrayList<>();
         vuoronSaadutAteriat = 0;
         vuoronSaatuPuu = 0;
@@ -84,22 +79,20 @@ public class Leiri {
             }
         }
         
-        vuoronPotkittavat = new ArrayList<>();
-        
         //Palkataan uudet tyontekijat
         for (int i = 0; i < vuoronPalkattavat.size(); i++) {
             if (vuoronPalkattavat.get(i) != 0) {
                 for (int k = 0; k < vuoronPalkattavat.get(i); k++) {
                     palkkaaTyontekija(i);
                 }
-            }
-            
-                
+            }     
         }
         
+        //Vuoron palkattavien ja potkittavien nollaus
         vuoronPalkattavat = new ArrayList<>(Collections.nCopies(4, 0));
         vuoronPotkittavat = new ArrayList<>(Collections.nCopies(4, 0));
-
+        
+        //Kasitellaan tyontekijoiden teot
         kasitteleCooldown();
         laskeVelat();
         laskeTyontekijat();
