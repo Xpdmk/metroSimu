@@ -1,5 +1,6 @@
 package Main;
 
+import Kauppanakyma.Kauppa;
 import Tyontekijanakyma.*;
 import luokat.Raportti;
 import java.net.URL;
@@ -32,6 +33,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 public class Main extends Application implements Initializable {
 
     static Leiri leiri;
+    static Kauppa kauppa;
     static TyontekijanakymanKasittelija tk;
     static ArrayList<Slider> sliderit;
     static ArrayList<TextField> kentat;
@@ -54,8 +56,9 @@ public class Main extends Application implements Initializable {
         voidaanHavita = false;
         tk = new TyontekijanakymanKasittelija();
 
-        //Leirin valmistelu
+        //Olioiden valmistelu
         leiri = new Leiri();
+        kauppa = new Kauppa();
 
         launch(args);
 
@@ -66,7 +69,7 @@ public class Main extends Application implements Initializable {
     public void start(Stage primaryStage) throws Exception {
         //Main.fxml tiedoston lataus samasta kansiosta
         root = FXMLLoader.load(getClass().getResource("Main.fxml"));
-        
+
         sliderit = new ArrayList<>();
         kentat = new ArrayList<>();
         tekstit = new ArrayList<>();
@@ -93,7 +96,7 @@ public class Main extends Application implements Initializable {
                 ////Lisätään kuuntelija, joka muuttaa lisaaTyontekijoita-listan arvoa, kun Slideria liikutetaan
                 slider.valueProperty().addListener((ObservableValue<? extends Number> arvo, Number vanha, Number uusi) -> {
                     if (vanha.intValue() != uusi.intValue()) {
-                        leiri.setPalkattavienMaaraTyonpaikkaindeksilla((sliderit.indexOf(slider)+1), (int) arvo.getValue().intValue());
+                        leiri.setPalkattavienMaaraTyonpaikkaindeksilla((sliderit.indexOf(slider) + 1), (int) arvo.getValue().intValue());
                         paivitaKentta(sliderit.indexOf(slider));
                         paivitaTaulukot();
                     }
@@ -119,7 +122,7 @@ public class Main extends Application implements Initializable {
                         if (!uusi.isEmpty() && tarkistaKentat(false)) {
                             uusiArvo = Integer.parseInt(kentta.getText());
                         }
-                        leiri.setPalkattavienMaaraTyonpaikkaindeksilla(kentat.indexOf(kentta)+1, uusiArvo);
+                        leiri.setPalkattavienMaaraTyonpaikkaindeksilla(kentat.indexOf(kentta) + 1, uusiArvo);
                         paivitaTaulukot();
                     }
                 });
@@ -150,6 +153,14 @@ public class Main extends Application implements Initializable {
 
         });
 
+        Button myyNappi = (Button) root.lookup("#myyNappi");
+        myyNappi.setOnAction(e -> {
+            HashMap<String, Integer> tuotteet = new HashMap<>();
+            tuotteet.put("Puu", leiri.getPuu());
+            leiri.kasitteleMyydyt(kauppa.avaa(tuotteet));
+            
+        });
+
         //Ikkunan valmistelut ja näyttö
         paivitaTyontekijatekstit();
         paivitaLisaaelementit();
@@ -163,7 +174,7 @@ public class Main extends Application implements Initializable {
         for (TextField kentta : kentat) {
             if (!kentta.getText().isEmpty()) {
                 try {
-                    leiri.setPalkattavienMaaraTyonpaikkaindeksilla(kentat.indexOf(kentta)+1, Integer.parseInt(kentta.getText()));
+                    leiri.setPalkattavienMaaraTyonpaikkaindeksilla(kentat.indexOf(kentta) + 1, Integer.parseInt(kentta.getText()));
                 } catch (Exception e) {
                     if (ilmoitetaan) {
                         JOptionPane.showMessageDialog(null, "Syötteen täytyy olla numero tai tyhjä");
@@ -209,41 +220,41 @@ public class Main extends Application implements Initializable {
 
     private void paivitaTaulukot() {
         //Täytetään vuoron aikana tapahtumien näyttävä taulukko (ylin)
-        ArrayList<taulukkoTietue> vuoronTapahtumat = new ArrayList<>();
-        vuoronTapahtumat.add(new taulukkoTietue("Hakattu puu", "" + viimeisinRaportti.getSaatuPuu()));
-        vuoronTapahtumat.add(new taulukkoTietue("Metsästetty aterioita", "" + viimeisinRaportti.getSaadutAteriat()));
-        vuoronTapahtumat.add(new taulukkoTietue("Myyntitulot", "" + viimeisinRaportti.getMyyntitulot()));
+        ArrayList<Paanakymarivi> vuoronTapahtumat = new ArrayList<>();
+        vuoronTapahtumat.add(new Paanakymarivi("Hakattu puu", "" + viimeisinRaportti.getSaatuPuu()));
+        vuoronTapahtumat.add(new Paanakymarivi("Metsästetty aterioita", "" + viimeisinRaportti.getSaadutAteriat()));
+        vuoronTapahtumat.add(new Paanakymarivi("Myyntitulot", "" + viimeisinRaportti.getMyyntitulot()));
         if (viimeisinRaportti.getToheloijat().size() > 0) {
-            vuoronTapahtumat.add(new taulukkoTietue("Toheloinnit", "" + viimeisinRaportti.getToheloijat().size()));
+            vuoronTapahtumat.add(new Paanakymarivi("Toheloinnit", "" + viimeisinRaportti.getToheloijat().size()));
         }
-        ObservableList<taulukkoTietue> OBtapahtumat = FXCollections.observableArrayList(vuoronTapahtumat);
+        ObservableList<Paanakymarivi> OBtapahtumat = FXCollections.observableArrayList(vuoronTapahtumat);
         taulukot.get(0).setItems(OBtapahtumat);
 
         //Täytetään nykyisen tilanteen näyttävä taulukko (keskimmäinen)
-        ArrayList<taulukkoTietue> nykyinenTilanne = new ArrayList<>();
-        nykyinenTilanne.add(new taulukkoTietue("Metsän puiden määrä", "" + leiri.getMetsanKoko()));
-        nykyinenTilanne.add(new taulukkoTietue("Puu", "" + leiri.getPuu()));
-        nykyinenTilanne.add(new taulukkoTietue("Ateriat", "" + leiri.getAterioidenMaara()));
-        nykyinenTilanne.add(new taulukkoTietue("Raha", "" + leiri.getRaha()));
-        ObservableList<taulukkoTietue> OBnykyinen = FXCollections.observableArrayList(nykyinenTilanne);
+        ArrayList<Paanakymarivi> nykyinenTilanne = new ArrayList<>();
+        nykyinenTilanne.add(new Paanakymarivi("Metsän puiden määrä", "" + leiri.getMetsanKoko()));
+        nykyinenTilanne.add(new Paanakymarivi("Puu", "" + leiri.getPuu()));
+        nykyinenTilanne.add(new Paanakymarivi("Ateriat", "" + leiri.getAterioidenMaara()));
+        nykyinenTilanne.add(new Paanakymarivi("Raha", "" + leiri.getRaha()));
+        ObservableList<Paanakymarivi> OBnykyinen = FXCollections.observableArrayList(nykyinenTilanne);
         taulukot.get(1).setItems(OBnykyinen);
 
         //Täytetään oletettavien tapahtumien näyttävä taulukko (alin)
-        ArrayList<taulukkoTietue> tulevat = new ArrayList<>();
+        ArrayList<Paanakymarivi> tulevat = new ArrayList<>();
         double maksettavaPalkka = leiri.palkkoihinMenevaRaha();
-        tulevat.add(new taulukkoTietue("Palkkoihin menevä raha", "" + maksettavaPalkka));
-        ObservableList<taulukkoTietue> OBtulevat = FXCollections.observableArrayList(tulevat);
+        tulevat.add(new Paanakymarivi("Palkkoihin menevä raha", "" + maksettavaPalkka));
+        ObservableList<Paanakymarivi> OBtulevat = FXCollections.observableArrayList(tulevat);
         taulukot.get(2).setItems(OBtulevat);
     }
 
     private void valmisteleTaulukot() {
 
         for (TableView taulukko : taulukot) {
-            TableColumn<taulukkoTietue, String> kohdeSarake = new TableColumn<>("Kohde");
+            TableColumn<Paanakymarivi, String> kohdeSarake = new TableColumn<>("Kohde");
             kohdeSarake.setMinWidth(200);
             kohdeSarake.setCellValueFactory(new PropertyValueFactory<>("kohde"));
 
-            TableColumn<taulukkoTietue, String> tietoSarake = new TableColumn<>("Tietoa");
+            TableColumn<Paanakymarivi, String> tietoSarake = new TableColumn<>("Tietoa");
             tietoSarake.setMinWidth(200);
             tietoSarake.setCellValueFactory(new PropertyValueFactory<>("tieto"));
             taulukko.getColumns().addAll(kohdeSarake, tietoSarake);
@@ -252,15 +263,15 @@ public class Main extends Application implements Initializable {
     }
 
     private void paivitaKentta(int i) {
-        kentat.get(i).setText("" + leiri.getPalkattavienMaaraTyonpaikkaindeksilla(i+1));
+        kentat.get(i).setText("" + leiri.getPalkattavienMaaraTyonpaikkaindeksilla(i + 1));
     }
 
     private void paivitaTyontekijatekstit() {
         ArrayList<Integer> maarat = leiri.tyontekijoidenMaarat();
         for (int i = 0; i < kaytettavienTyopaikkojenMaara; i++) {
             if (!tekstit.get(i).isDisabled()) {
-                int maara = maarat.get(i+1);
-                tekstit.get(i).setText("Työntekijät: " + maara) ;
+                int maara = maarat.get(i + 1);
+                tekstit.get(i).setText("Työntekijät: " + maara);
             }
         }
     }
@@ -268,7 +279,7 @@ public class Main extends Application implements Initializable {
     private void paivitaLisaaelementit() {
         ArrayList<Integer> maarat = leiri.tyontekijoidenMaarat();
         for (int i = 0; i < kaytettavienTyopaikkojenMaara; i++) {
-            int maara = maarat.get(i+1);
+            int maara = maarat.get(i + 1);
             Slider slider = sliderit.get(i);
             slider.setMin(0);
             slider.setBlockIncrement(1);

@@ -9,11 +9,11 @@ package Main;
  *
  * @author royja
  */
-public class taulukkoTietue {
+public class Paanakymarivi {
     private String kohde;
     private String tieto;
     
-    public taulukkoTietue(String kohde, String tieto) {
+    public Paanakymarivi(String kohde, String tieto) {
         this.kohde = kohde;
         this.tieto = tieto;
     }

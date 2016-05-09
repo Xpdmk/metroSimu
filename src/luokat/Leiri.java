@@ -309,4 +309,17 @@ public class Leiri {
     public ArrayList<Integer> getPotkittavat() {
         return vuoronPotkittavat;
     }
+    
+    public void kasitteleMyydyt(HashMap<String, double[]> tuotteet) {
+        for (Map.Entry<String, double[]> tuote : tuotteet.entrySet()) {
+            String tuotteenNimi = tuote.getKey();
+            switch (tuotteenNimi) {
+                case "Puu":
+                    puu -= tuote.getValue()[0];
+                    raha -= tuote.getValue()[1]*tuote.getValue()[1];
+                default:
+                    
+            }
+        }
+    }
 }
