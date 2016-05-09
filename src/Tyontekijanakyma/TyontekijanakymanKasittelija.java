@@ -101,7 +101,7 @@ public class TyontekijanakymanKasittelija implements Initializable {
         toheloinnitSarake.setCellValueFactory(new PropertyValueFactory<>("toheloinnit"));
 
         //Sarake valintaruutuja varten
-        valintaruutuSarake = new TableColumn<>("Pidä tyontekijä");
+        valintaruutuSarake = new TableColumn<>("Pidä työntekijä");
         valintaruutuSarake.setMinWidth(30);
         valintaruutuSarake.setCellValueFactory(new PropertyValueFactory<>("valintaruutu"));
 
