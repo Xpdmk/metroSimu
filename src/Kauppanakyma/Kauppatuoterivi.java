@@ -4,10 +4,10 @@ package Kauppanakyma;
 import javafx.scene.control.TextField;
 
 public class Kauppatuoterivi {
-    private String tuotteenNimi;
-    private int tuotteenMaara;
-    private double tuotteenHinta;
-    private TextField syote;
+    private final String tuotteenNimi;
+    private final int tuotteenMaara;
+    private final double tuotteenHinta;
+    private final TextField syote;
     
     public Kauppatuoterivi(String tuotteenNimi, int tuotteenMaara, double tuotteenHinta) {
         this.tuotteenNimi = tuotteenNimi;
