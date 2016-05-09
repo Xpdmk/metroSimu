@@ -316,7 +316,7 @@ public class Leiri {
             switch (tuotteenNimi) {
                 case "Puu":
                     puu -= tuote.getValue()[0];
-                    raha -= tuote.getValue()[1]*tuote.getValue()[1];
+                    raha += tuote.getValue()[1]*tuote.getValue()[1];
                 default:
                     
             }
