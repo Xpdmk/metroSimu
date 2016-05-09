@@ -1,4 +1,4 @@
-package luokat;
+package Luokat;
 
 import java.util.Random;
 

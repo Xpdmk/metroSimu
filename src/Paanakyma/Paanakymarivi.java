@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Main;
+package Paanakyma;
 
 /**
  *
@@ -12,7 +12,7 @@ package Main;
 public class Paanakymarivi {
     private String kohde;
     private String tieto;
-    
+
     public Paanakymarivi(String kohde, String tieto) {
         this.kohde = kohde;
         this.tieto = tieto;

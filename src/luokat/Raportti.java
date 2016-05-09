@@ -1,4 +1,4 @@
-package luokat;
+package Luokat;
 import java.util.ArrayList;
 
 public class Raportti {
@@ -30,7 +30,7 @@ public class Raportti {
     public double getMyyntitulot() {
         return myyntitulot;
     }
-  
-  
+
+
 
 }

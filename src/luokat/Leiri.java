@@ -1,4 +1,4 @@
-package luokat;
+package Luokat;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -12,7 +12,6 @@ public class Leiri {
     private Metsa metsa;
     private Luonto luonto;
     //private Kaivos kaivos;
-    //private Kauppa kauppa;
     private ArrayList<Tyontekija> tyontekijat;
     private int aterioidenMaara;
     private double raha;
@@ -37,7 +36,7 @@ public class Leiri {
         this.aterioidenMaara = 10;
         this.raha = 100;
         this.puu = 0;
-        this.raportit = new ArrayList();
+        this.raportit = new ArrayList<>();
         this.oletusPalkka = 10;
         this.vuoronToheloijienKoodit = new ArrayList<>();
         this.vuoronPotkittavat = new ArrayList<>(Collections.nCopies(4, 0));
@@ -68,7 +67,7 @@ public class Leiri {
         vuoronSaadutAteriat = 0;
         vuoronSaatuPuu = 0;
         vuoronKuolleet = new ArrayList<>();
-        
+
         //Potkitaan tyontekijat
         for (int i = 0; i < vuoronPotkittavat.size(); i++) {
             for (Tyontekija tyontekija : tyontekijat) {
@@ -78,20 +77,20 @@ public class Leiri {
                 }
             }
         }
-        
+
         //Palkataan uudet tyontekijat
         for (int i = 0; i < vuoronPalkattavat.size(); i++) {
             if (vuoronPalkattavat.get(i) != 0) {
                 for (int k = 0; k < vuoronPalkattavat.get(i); k++) {
                     palkkaaTyontekija(i);
                 }
-            }     
+            }
         }
-        
+
         //Vuoron palkattavien ja potkittavien nollaus
         vuoronPalkattavat = new ArrayList<>(Collections.nCopies(4, 0));
         vuoronPotkittavat = new ArrayList<>(Collections.nCopies(4, 0));
-        
+
         //Kasitellaan tyontekijoiden teot
         kasitteleCooldown();
         laskeVelat();
@@ -127,7 +126,7 @@ public class Leiri {
             tyontekija.setPalkka(tyontekija.getPalkka() * Math.pow(1.1, vuoronToheloijienKoodit.size()));
         }
     }
-    
+
     private void kuoletaTyontekija(int tyopaikkaindeksi) {
         ArrayList<Tyontekija> vaihtoehtoiset = new ArrayList<>();
         for (Tyontekija tyontekija : tyontekijat) {
@@ -168,14 +167,14 @@ public class Leiri {
             tyontekija.setKeratytResurssit(tyontekija.getKeratytResurssit() + vuoronKeratyt);
         }
     }
-    
+
     public double palkkoihinMenevaRaha() {
         double palkat = 0;
         for (Tyontekija tyontekija : tyontekijat) {
             if (!vuoronPotkittavat.contains(tyontekija.getTyontekijakoodi())) {
                 palkat += tyontekija.getPalkka();
             }
-            
+
         }
         for (Integer i : vuoronPalkattavat) {
             palkat += i*oletusPalkka;
@@ -255,11 +254,11 @@ public class Leiri {
     public void setOletusPalkka(int oletusPalkka) {
         this.oletusPalkka = oletusPalkka;
     }
-    
+
     public int getMetsanKoko() {
         return metsa.getPuidenMaara();
     }
-    
+
     public ArrayList<Integer> tyontekijoidenMaarat() {
         ArrayList<Integer> maarat = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
@@ -273,15 +272,15 @@ public class Leiri {
         }
         return maarat;
     }
-    
+
     public void setPalkattavienMaaraTyonpaikkaindeksilla(int tyopaikkaindeksi, int maara) {
         vuoronPalkattavat.set(tyopaikkaindeksi, maara);
     }
-    
+
     public int getPalkattavienMaaraTyonpaikkaindeksilla(int tyopaikkaindeksi) {
         return vuoronPalkattavat.get(tyopaikkaindeksi);
     }
-    
+
     public void kasittelePotkittavat(HashMap<Integer, Boolean> muutetut) {
         for (Map.Entry<Integer, Boolean> pidetaanko : muutetut.entrySet()) {
             if (pidetaanko.getValue()) {
@@ -298,11 +297,11 @@ public class Leiri {
             }
         }
     }
-    
+
     public ArrayList<Integer> getPotkittavat() {
         return vuoronPotkittavat;
     }
-    
+
     public void kasitteleMyydyt(HashMap<String, double[]> tuotteet) {
         for (Map.Entry<String, double[]> tuote : tuotteet.entrySet()) {
             String tuotteenNimi = tuote.getKey();
@@ -311,7 +310,7 @@ public class Leiri {
                     puu -= tuote.getValue()[0];
                     raha += tuote.getValue()[1]*tuote.getValue()[1];
                     break;
-                    
+
             }
         }
     }

@@ -45,12 +45,12 @@ public class Kauppa {
         tuotteidenHinnat = new HashMap<>();
         tuotteidenNimet = new ArrayList<>();
         muutoksetTallennetaan = true;
-        
+
         //Ikkunan Valmistelu
         ikkuna = new Stage();
         ikkuna.setTitle("Kauppa");
         ikkuna.initModality(Modality.APPLICATION_MODAL);
-        
+
         //Yritetaan hakea FXML-tiedosto
         try {
             asettelu = FXMLLoader.load(this.getClass().getResource("/Kauppanakyma/Kauppanakyma.fxml"));
@@ -58,19 +58,19 @@ public class Kauppa {
             System.out.println(getClass().getName() + " ei loytänyt asettelua");
             System.exit(0);
         }
-        
+
         //Haetaan elementit
         myy = (Button) asettelu.lookup("#myyNappi");
         peruuta = (Button) asettelu.lookup("#peruutaNappi");
         tulot = (Label) asettelu.lookup("#tulotTeksti");
         taulukko = (TableView) asettelu.lookup("#tuotteetTaulukko");
-        
+
         //Asetetaan Peruuta-napille toiminto
         peruuta.setOnAction(e -> {
             ikkuna.close();
             muutoksetTallennetaan = false;
         });
-        
+
         //Asetetaan Myy-napille toiminto
         myy.setOnAction(e -> {
             int tarkistettavaRivi = tarkistaMyytavienMaarat();
@@ -80,7 +80,7 @@ public class Kauppa {
                 ikkuna.close();
             }
         });
-        
+
         //Valmistellaan sarakkeet
         TableColumn<Kauppatuoterivi, String> nimiSarake = new TableColumn("Tuote");
         nimiSarake.setMinWidth(100);
@@ -97,7 +97,7 @@ public class Kauppa {
         TableColumn<Kauppatuoterivi, TextField> syoteSarake = new TableColumn("Myydään");
         syoteSarake.setMinWidth(200);
         syoteSarake.setCellValueFactory(new PropertyValueFactory<>("syote"));
-        
+
         //Asetetaan sarakkeet taulukkoon
         taulukko.getColumns().addAll(nimiSarake, maaraSarake, hintaSarake, syoteSarake);
 
@@ -120,18 +120,18 @@ public class Kauppa {
             }
             //Lisataan hinta muistiin
             tuotteidenHinnat.put(tuotteenNimi, hinta);
-            
+
             tuoterivit.add(new Kauppatuoterivi(tuotteenNimi, tuotteidenMaarat.get(tuotteenNimi), hinta));
         }
         //Tehdaan ArrayListista ObservableList, jonka TableView osaa nayttaa
         ObservableList<Kauppatuoterivi> OBtuoterivit = FXCollections.observableArrayList(tuoterivit);
         //Asetetaan taulukon rivit ObservableListilla
         taulukko.setItems(OBtuoterivit);
-        
+
         //Ikkunan viimeistely ja avaus
         ikkuna.setScene(new Scene(asettelu));
         ikkuna.showAndWait();
-        
+
         //Varmistetaan, tallennetaanko kayttajan muutokset
         if (muutoksetTallennetaan) {
             for (int i = 0; i < tuotteidenNimet.size(); i++) {
@@ -160,7 +160,7 @@ public class Kauppa {
 
         return -1;
     }
-    
+
     private Integer muutaTekstiKokonaisluvuksi(String teksti) {
         int numero;
         if (!teksti.isEmpty()) {

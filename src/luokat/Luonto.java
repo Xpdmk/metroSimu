@@ -1,4 +1,4 @@
-package luokat;
+package Luokat;
 
 public class Luonto {
   private int elaintenMaara;
@@ -24,5 +24,5 @@ public class Luonto {
     public void setElaintenkasvu(double elaintenkasvu) {
         this.elaintenkasvu = elaintenkasvu;
     }
-  
+
 }

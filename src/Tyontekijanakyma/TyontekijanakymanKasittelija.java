@@ -20,7 +20,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import luokat.Tyontekija;
+import Luokat.Tyontekija;
 import javax.swing.JOptionPane;
 
 public class TyontekijanakymanKasittelija implements Initializable {

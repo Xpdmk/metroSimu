@@ -1,8 +1,7 @@
-package Main;
-
-import Kauppanakyma.Kauppa;
+import Paanakyma.Paanakymarivi;
+import Kauppanakyma.*;
 import Tyontekijanakyma.*;
-import luokat.Raportti;
+import Luokat.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +17,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
-import luokat.Leiri;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.beans.value.ObservableValue;
@@ -59,7 +57,7 @@ public class Main extends Application implements Initializable {
         //Olioiden valmistelu
         leiri = new Leiri();
         kauppa = new Kauppa();
-        
+
         launch(args);
 
     }
@@ -139,7 +137,7 @@ public class Main extends Application implements Initializable {
 
                 //Katsotaan, riittaako raha tyontekijoiden palkkaamiseen
                 if (voidaanHavita && leiri.getRaha() < leiri.palkkoihinMenevaRaha()) {
-                    JOptionPane.showMessageDialog(null, "GAME OVER, liian v√§h√§n rahaa");
+                    JOptionPane.showMessageDialog(null, "GAME OVER, liian v‰h‰n rahaa");
                     System.exit(0);
                 }
 
@@ -177,7 +175,7 @@ public class Main extends Application implements Initializable {
                     leiri.setPalkattavienMaaraTyonpaikkaindeksilla(kentat.indexOf(kentta) + 1, Integer.parseInt(kentta.getText()));
                 } catch (Exception e) {
                     if (ilmoitetaan) {
-                        JOptionPane.showMessageDialog(null, "Syotteen t√§ytyy olla numero tai tyhj√§");
+                        JOptionPane.showMessageDialog(null, "Syotteen t‰ytyy olla numero tai tyhj‰");
                         kentta.requestFocus();
                     }
 
@@ -204,13 +202,13 @@ public class Main extends Application implements Initializable {
         //Selvitetaan, mita bt-nappia painettiin
         if (kutsuja.getId().equals("bt1")) {
             numero = 1;
-            ikkunanOtsikko = "Mets√§tyol√§iset";
+            ikkunanOtsikko = "Mets‰tyol‰iset";
         } else if (kutsuja.getId().equals("bt2")) {
             numero = 2;
-            ikkunanOtsikko = "Mets√§st√§j√§t";
+            ikkunanOtsikko = "Mets‰st‰j‰t";
         } else if (kutsuja.getId().equals("bt3")) {
             numero = 3;
-            ikkunanOtsikko = "Kaivostyol√§iset";
+            ikkunanOtsikko = "Kaivostyol‰iset";
         } else {
             return;
         }
@@ -222,7 +220,7 @@ public class Main extends Application implements Initializable {
         //Taytetaan vuoron aikana tapahtumien nayttava taulukko (ylin)
         ArrayList<Paanakymarivi> vuoronTapahtumat = new ArrayList<>();
         vuoronTapahtumat.add(new Paanakymarivi("Hakattu puu", "" + viimeisinRaportti.getSaatuPuu()));
-        vuoronTapahtumat.add(new Paanakymarivi("Mets√§stetty aterioita", "" + viimeisinRaportti.getSaadutAteriat()));
+        vuoronTapahtumat.add(new Paanakymarivi("Mets‰stetty aterioita", "" + viimeisinRaportti.getSaadutAteriat()));
         vuoronTapahtumat.add(new Paanakymarivi("Myyntitulot", "" + viimeisinRaportti.getMyyntitulot()));
         if (viimeisinRaportti.getToheloijat().size() > 0) {
             vuoronTapahtumat.add(new Paanakymarivi("Toheloinnit", "" + viimeisinRaportti.getToheloijat().size()));
@@ -232,7 +230,7 @@ public class Main extends Application implements Initializable {
 
         //Taytetaan nykyisen tilanteen nayttava taulukko (keskimmainen)
         ArrayList<Paanakymarivi> nykyinenTilanne = new ArrayList<>();
-        nykyinenTilanne.add(new Paanakymarivi("Mets√§n puiden m√§√§r√§", "" + leiri.getMetsanKoko()));
+        nykyinenTilanne.add(new Paanakymarivi("Mets‰n puiden m‰‰r‰", "" + leiri.getMetsanKoko()));
         nykyinenTilanne.add(new Paanakymarivi("Puu", "" + leiri.getPuu()));
         nykyinenTilanne.add(new Paanakymarivi("Ateriat", "" + leiri.getAterioidenMaara()));
         nykyinenTilanne.add(new Paanakymarivi("Raha", "" + leiri.getRaha()));
@@ -242,7 +240,7 @@ public class Main extends Application implements Initializable {
         //Taytetaan oletettavien tapahtumien nayttava taulukko (alin)
         ArrayList<Paanakymarivi> tulevat = new ArrayList<>();
         double maksettavaPalkka = leiri.palkkoihinMenevaRaha();
-        tulevat.add(new Paanakymarivi("Palkkoihin menev√§ raha", "" + maksettavaPalkka));
+        tulevat.add(new Paanakymarivi("Palkkoihin menev‰ raha", "" + maksettavaPalkka));
         ObservableList<Paanakymarivi> OBtulevat = FXCollections.observableArrayList(tulevat);
         taulukot.get(2).setItems(OBtulevat);
     }
@@ -271,7 +269,7 @@ public class Main extends Application implements Initializable {
         for (int i = 0; i < kaytettavienTyopaikkojenMaara; i++) {
             if (!tekstit.get(i).isDisabled()) {
                 int maara = maarat.get(i + 1);
-                tekstit.get(i).setText("Tyontekij√§t: " + maara);
+                tekstit.get(i).setText("Tyontekij‰t: " + maara);
             }
         }
     }

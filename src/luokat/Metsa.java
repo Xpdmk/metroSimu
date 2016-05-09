@@ -1,4 +1,4 @@
-package luokat;
+package Luokat;
 
 public class Metsa {
   private int puidenMaara;
@@ -25,5 +25,5 @@ public class Metsa {
         this.puidenKasvu = puidenKasvu;
     }
 
-  
+
 }
