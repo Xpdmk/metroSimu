@@ -42,6 +42,7 @@ public class Main extends Application implements Initializable {
     static int kaytettavienTyopaikkojenMaara;
     static int tyopaikkojenMaara;
     static int maxTickShow;
+    static boolean voidaanHavita;
     static Parent root;
 
     public static void main(String[] args) {
@@ -50,6 +51,7 @@ public class Main extends Application implements Initializable {
         voidaanSulkea = true;
         kaytettavienTyopaikkojenMaara = 2;
         maxTickShow = 5;
+        voidaanHavita = false;
         tk = new TyontekijanakymanKasittelija();
 
         //Leirin valmistelu
@@ -133,7 +135,7 @@ public class Main extends Application implements Initializable {
                 primaryStage.close();
 
                 //Katsotaan, riittääkö raha työntekijöiden palkkaamiseen
-                if (leiri.getRaha() < leiri.palkkoihinMenevaRaha()) {
+                if (voidaanHavita && leiri.getRaha() < leiri.palkkoihinMenevaRaha()) {
                     JOptionPane.showMessageDialog(null, "GAME OVER, liian vähän rahaa");
                     System.exit(0);
                 }
@@ -211,6 +213,9 @@ public class Main extends Application implements Initializable {
         vuoronTapahtumat.add(new taulukkoTietue("Hakattu puu", "" + viimeisinRaportti.getSaatuPuu()));
         vuoronTapahtumat.add(new taulukkoTietue("Metsästetty aterioita", "" + viimeisinRaportti.getSaadutAteriat()));
         vuoronTapahtumat.add(new taulukkoTietue("Myyntitulot", "" + viimeisinRaportti.getMyyntitulot()));
+        if (viimeisinRaportti.getToheloijat().size() > 0) {
+            vuoronTapahtumat.add(new taulukkoTietue("Toheloinnit", "" + viimeisinRaportti.getToheloijat().size()));
+        }
         ObservableList<taulukkoTietue> OBtapahtumat = FXCollections.observableArrayList(vuoronTapahtumat);
         taulukot.get(0).setItems(OBtapahtumat);
 
