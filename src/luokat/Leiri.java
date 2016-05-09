@@ -317,7 +317,7 @@ public class Leiri {
                 case "Puu":
                     puu -= tuote.getValue()[0];
                     raha += tuote.getValue()[1]*tuote.getValue()[1];
-                default:
+                    break;
                     
             }
         }

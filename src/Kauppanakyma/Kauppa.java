@@ -106,6 +106,7 @@ public class Kauppa {
             switch (tuotteenNimi) {
                 case "Puu":
                     hinta = puunHinta;
+                    break;
                 default:
                     hinta = 0;
             }

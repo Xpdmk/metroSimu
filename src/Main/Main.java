@@ -158,7 +158,7 @@ public class Main extends Application implements Initializable {
             HashMap<String, Integer> tuotteet = new HashMap<>();
             tuotteet.put("Puu", leiri.getPuu());
             leiri.kasitteleMyydyt(kauppa.avaa(tuotteet));
-            
+            paivitaTaulukot();
         });
 
         //Ikkunan valmistelut ja näyttö
