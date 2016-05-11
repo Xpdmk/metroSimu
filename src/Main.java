@@ -3,11 +3,10 @@ import Paanakyma.Paanakymarivi;
 import Kauppanakyma.*;
 import Tyontekijanakyma.*;
 import Luokat.*;
+import Ilmoittaja.Ilmoittaja;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -22,7 +21,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
-import javax.swing.JOptionPane;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -34,6 +32,7 @@ public class Main extends Application implements Initializable {
 
     static Leiri leiri;
     static Kauppa kauppa;
+    static Ilmoittaja ilmoittaja;
     static TyontekijanakymanKasittelija tk;
     static ArrayList<Slider> sliderit;
     static ArrayList<TextField> kentat;
@@ -141,7 +140,7 @@ public class Main extends Application implements Initializable {
 
                     //Katsotaan, riittaako raha tyontekijoiden palkkaamiseen
                     if (voidaanHavita && leiri.getRaha() < leiri.palkkoihinMenevaRaha()) {
-                        JOptionPane.showMessageDialog(null, "GAME OVER, liian vähän rahaa");
+                        ilmoittaja.nayta("Peli ohi", "Liian vähän rahaa");
                         System.exit(0);
                     }
                     leiri.kasittele();
@@ -184,7 +183,7 @@ public class Main extends Application implements Initializable {
                     leiri.setPalkattavienMaaraTyonpaikkaindeksilla(kentat.indexOf(kentta) + 1, Integer.parseInt(kentta.getText()));
                 } catch (Exception e) {
                     if (ilmoitetaan) {
-                        JOptionPane.showMessageDialog(null, "Syotteen täytyy olla numero tai tyhjä");
+                        ilmoittaja.nayta("Syötteessä vika","Syotteen täytyy olla numero tai tyhjä");
                         kentta.requestFocus();
                     }
 
