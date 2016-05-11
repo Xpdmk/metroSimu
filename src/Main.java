@@ -1,3 +1,4 @@
+
 import Paanakyma.Paanakymarivi;
 import Kauppanakyma.*;
 import Tyontekijanakyma.*;
@@ -67,103 +68,105 @@ public class Main extends Application implements Initializable {
     //JavaFX suorittaa taman metodien, kun main-metodin launch(args) suoritetaan
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //Main.fxml tiedoston lataus samasta kansiosta
-        root = FXMLLoader.load(getClass().getResource("Main.fxml"));
+        if (root == null) {
+            //Main.fxml tiedoston lataus samasta kansiosta
+            root = FXMLLoader.load(getClass().getResource("Main.fxml"));
 
-        sliderit = new ArrayList<>();
-        kentat = new ArrayList<>();
-        tekstit = new ArrayList<>();
-        taulukot = new ArrayList<>();
+            sliderit = new ArrayList<>();
+            kentat = new ArrayList<>();
+            tekstit = new ArrayList<>();
+            taulukot = new ArrayList<>();
 
-        //Valmistele taulukot
-        for (int i = 0; i < 3; i++) {
-            taulukot.add((TableView) root.lookup("#taulukko" + i));
+            //Valmistele taulukot
+            for (int i = 0; i < 3; i++) {
+                taulukot.add((TableView) root.lookup("#taulukko" + i));
+            }
+
+            //Haetaan ilmoituskentta-elementti
+            ilmoituskentta = (TextArea) root.lookup("#ilmoitusTeksti");
+
+            //Slidereiden, kenttien ja tekstien valmistelu
+            for (int i = 0; i < tyopaikkojenMaara; i++) {
+                if (i >= kaytettavienTyopaikkojenMaara) {
+                    root.lookup("#editVBox" + i).setDisable(true);
+                    root.lookup("#tyontekijatTeksti" + i).setDisable(true);
+                } else {
+                    //Haetaan Slider-elementti
+                    Slider slider = (Slider) root.lookup("#slider" + i);
+                    sliderit.add(slider);
+                    ////Lisataan kuuntelija, joka muuttaa lisaaTyontekijoita-listan arvoa, kun Slideria liikutetaan
+                    slider.valueProperty().addListener((ObservableValue<? extends Number> arvo, Number vanha, Number uusi) -> {
+                        if (vanha.intValue() != uusi.intValue()) {
+                            leiri.setPalkattavienMaaraTyonpaikkaindeksilla((sliderit.indexOf(slider) + 1), (int) arvo.getValue().intValue());
+                            paivitaKentta(sliderit.indexOf(slider));
+                            paivitaTaulukot();
+                        }
+                    });
+
+                    //Valmistellaan tekstikentta-elementti
+                    TextField kentta = (TextField) root.lookup("#lisaaKentta" + i);
+                    kentat.add(kentta);
+                    kentta.setPromptText("Montako palkataan?");
+                    ////Lisataan kuuntelija, joka tarkistaa, onko syote numero
+                    kentta.focusedProperty().addListener((arvo, vanha, uusi) -> {
+                        if (vanha && !kentta.getText().isEmpty()) {
+                            if (tarkistaKentat(true)) {
+                                voidaanSulkea = true;
+                            } else {
+                                voidaanSulkea = false;
+                            }
+                        }
+                    });
+                    kentta.textProperty().addListener((teksti, vanha, uusi) -> {
+                        if (!vanha.equals(uusi)) {
+                            int uusiArvo = 0;
+                            if (!uusi.isEmpty() && tarkistaKentat(false)) {
+                                uusiArvo = Integer.parseInt(kentta.getText());
+                            }
+                            leiri.setPalkattavienMaaraTyonpaikkaindeksilla(kentat.indexOf(kentta) + 1, uusiArvo);
+                            paivitaTaulukot();
+                        }
+                    });
+                    tekstit.add((Label) root.lookup("#tyontekijatTeksti" + i));
+                }
+
+            }
+
+            //Nappien toimintojen maaritteleminen
+            Button suoritaNappi = (Button) root.lookup("#suorita");
+            suoritaNappi.setOnAction(e -> {
+                if (voidaanSulkea) {
+                    //Suljetaan ikkuna
+                    primaryStage.close();
+
+                    //Katsotaan, riittaako raha tyontekijoiden palkkaamiseen
+                    if (voidaanHavita && leiri.getRaha() < leiri.palkkoihinMenevaRaha()) {
+                        JOptionPane.showMessageDialog(null, "GAME OVER, liian vähän rahaa");
+                        System.exit(0);
+                    }
+                    leiri.kasittele();
+                    viimeisinRaportti = leiri.viimeisinRaportti();
+                    paivitaTaulukot();
+                    asetaLisaaElementitNollaan();
+                    paivitaTyontekijatekstit();
+                    primaryStage.show();
+                }
+
+            });
+
+            Button myyNappi = (Button) root.lookup("#myyNappi");
+            myyNappi.setOnAction(e -> {
+                HashMap<String, Integer> tuotteet = new HashMap<>();
+                tuotteet.put("Puu", leiri.getPuu());
+                double saatuRaha = leiri.kasitteleMyydyt(kauppa.avaa(tuotteet));
+                lisaaIlmoituksiin("Myyntitulot: " + saatuRaha);
+                paivitaTaulukot();
+            });
         }
 
         viimeisinRaportti = leiri.viimeisinRaportti();
         valmisteleTaulukot();
         paivitaTaulukot();
-        
-        //Haetaan ilmoituskentta-elementti
-        ilmoituskentta = (TextArea) root.lookup("#ilmoitusTeksti");
-
-        //Slidereiden, kenttien ja tekstien valmistelu
-        for (int i = 0; i < tyopaikkojenMaara; i++) {
-            if (i >= kaytettavienTyopaikkojenMaara) {
-                root.lookup("#editVBox" + i).setDisable(true);
-                root.lookup("#tyontekijatTeksti" + i).setDisable(true);
-            } else {
-                //Haetaan Slider-elementti
-                Slider slider = (Slider) root.lookup("#slider" + i);
-                sliderit.add(slider);
-                ////Lisataan kuuntelija, joka muuttaa lisaaTyontekijoita-listan arvoa, kun Slideria liikutetaan
-                slider.valueProperty().addListener((ObservableValue<? extends Number> arvo, Number vanha, Number uusi) -> {
-                    if (vanha.intValue() != uusi.intValue()) {
-                        leiri.setPalkattavienMaaraTyonpaikkaindeksilla((sliderit.indexOf(slider) + 1), (int) arvo.getValue().intValue());
-                        paivitaKentta(sliderit.indexOf(slider));
-                        paivitaTaulukot();
-                    }
-                });
-
-                //Valmistellaan tekstikentta-elementti
-                TextField kentta = (TextField) root.lookup("#lisaaKentta" + i);
-                kentat.add(kentta);
-                kentta.setPromptText("Montako palkataan?");
-                ////Lisataan kuuntelija, joka tarkistaa, onko syote numero
-                kentta.focusedProperty().addListener((arvo, vanha, uusi) -> {
-                    if (vanha && !kentta.getText().isEmpty()) {
-                        if (tarkistaKentat(true)) {
-                            voidaanSulkea = true;
-                        } else {
-                            voidaanSulkea = false;
-                        }
-                    }
-                });
-                kentta.textProperty().addListener((teksti, vanha, uusi) -> {
-                    if (!vanha.equals(uusi)) {
-                        int uusiArvo = 0;
-                        if (!uusi.isEmpty() && tarkistaKentat(false)) {
-                            uusiArvo = Integer.parseInt(kentta.getText());
-                        }
-                        leiri.setPalkattavienMaaraTyonpaikkaindeksilla(kentat.indexOf(kentta) + 1, uusiArvo);
-                        paivitaTaulukot();
-                    }
-                });
-                tekstit.add((Label) root.lookup("#tyontekijatTeksti" + i));
-            }
-
-        }
-        //Nappien toimintojen maaritteleminen
-        Button suoritaNappi = (Button) root.lookup("#suorita");
-        suoritaNappi.setOnAction(e -> {
-            if (voidaanSulkea) {
-                //Suljetaan ikkuna
-                primaryStage.close();
-
-                //Katsotaan, riittaako raha tyontekijoiden palkkaamiseen
-                if (voidaanHavita && leiri.getRaha() < leiri.palkkoihinMenevaRaha()) {
-                    JOptionPane.showMessageDialog(null, "GAME OVER, liian vähän rahaa");
-                    System.exit(0);
-                }
-
-                leiri.kasittele();
-                try {
-                    start(new Stage());
-                } catch (Exception error) {
-                    primaryStage.close();
-                }
-            }
-
-        });
-
-        Button myyNappi = (Button) root.lookup("#myyNappi");
-        myyNappi.setOnAction(e -> {
-            HashMap<String, Integer> tuotteet = new HashMap<>();
-            tuotteet.put("Puu", leiri.getPuu());
-            double saatuRaha = leiri.kasitteleMyydyt(kauppa.avaa(tuotteet));
-            lisaaIlmoituksiin("Myyntitulot: " + saatuRaha);
-            paivitaTaulukot();
-        });
 
         //Ikkunan valmistelut ja naytto
         paivitaTyontekijatekstit();
@@ -299,13 +302,20 @@ public class Main extends Application implements Initializable {
             }
         }
     }
-    
+
     private void lisaaIlmoituksiin(String lisattava) {
         if (ilmoituskentta.getText().isEmpty()) {
             ilmoituskentta.setText(lisattava);
             return;
         }
         ilmoituskentta.setText(ilmoituskentta.getText() + "\n" + lisattava);
+    }
+    
+    private void asetaLisaaElementitNollaan() {
+        for (int i = 0; i < sliderit.size(); i++) {
+            sliderit.get(i).setValue(0);
+            kentat.get(i).setText("");
+        }
     }
 
 }
