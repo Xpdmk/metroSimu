@@ -112,12 +112,14 @@ public class Leiri {
     }
 
     private void laskeTyontekijat() {
-        for (Tyontekija tyontekija : tyontekijat) {
+        for (int i = 0; i < tyontekijat.size(); i++) {
+            Tyontekija tyontekija = tyontekijat.get(i);
             if (tyontekija.toheloiko()) {
                 onnettomuusCooldown += 4;
                 vuoronToheloijienKoodit.add(tyontekija.getTyontekijakoodi());
                 if (randomaattori.nextDouble()*100 > 100-todnakOnnettomuuskuolema) {
                     kuoletaTyontekija(tyontekija.getTyopaikkaindeksi());
+                    i--;
                 }
 
             }
@@ -310,7 +312,7 @@ public class Leiri {
             switch (tuotteenNimi) {
                 case "Puu":
                     puu -= tuote.getValue()[0];
-                    raha += tuote.getValue()[1]*tuote.getValue()[1];
+                    raha += tuote.getValue()[0]*tuote.getValue()[1];
                     break;
 
             }
