@@ -26,6 +26,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class Main extends Application implements Initializable {
@@ -37,6 +38,7 @@ public class Main extends Application implements Initializable {
     static ArrayList<TextField> kentat;
     static ArrayList<Label> tekstit;
     static ArrayList<TableView> taulukot;
+    static TextArea ilmoituskentta;
     static Raportti viimeisinRaportti;
     static boolean voidaanSulkea;
     static int kaytettavienTyopaikkojenMaara;
@@ -51,7 +53,7 @@ public class Main extends Application implements Initializable {
         voidaanSulkea = true;
         kaytettavienTyopaikkojenMaara = 2;
         maxTickShow = 5;
-        voidaanHavita = false;
+        voidaanHavita = true;
         tk = new TyontekijanakymanKasittelija();
 
         //Olioiden valmistelu
@@ -81,6 +83,9 @@ public class Main extends Application implements Initializable {
         viimeisinRaportti = leiri.viimeisinRaportti();
         valmisteleTaulukot();
         paivitaTaulukot();
+        
+        //Haetaan ilmoituskentta-elementti
+        ilmoituskentta = (TextArea) root.lookup("#ilmoitusTeksti");
 
         //Slidereiden, kenttien ja tekstien valmistelu
         for (int i = 0; i < tyopaikkojenMaara; i++) {
@@ -155,7 +160,8 @@ public class Main extends Application implements Initializable {
         myyNappi.setOnAction(e -> {
             HashMap<String, Integer> tuotteet = new HashMap<>();
             tuotteet.put("Puu", leiri.getPuu());
-            leiri.kasitteleMyydyt(kauppa.avaa(tuotteet));
+            double saatuRaha = leiri.kasitteleMyydyt(kauppa.avaa(tuotteet));
+            lisaaIlmoituksiin("Myyntitulot: " + saatuRaha);
             paivitaTaulukot();
         });
 
@@ -292,6 +298,14 @@ public class Main extends Application implements Initializable {
                 sliderit.get(i).setMax(maara * 3);
             }
         }
+    }
+    
+    private void lisaaIlmoituksiin(String lisattava) {
+        if (ilmoituskentta.getText().isEmpty()) {
+            ilmoituskentta.setText(lisattava);
+            return;
+        }
+        ilmoituskentta.setText(ilmoituskentta.getText() + "\n" + lisattava);
     }
 
 }

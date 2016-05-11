@@ -306,16 +306,20 @@ public class Leiri {
         return vuoronPotkittavat;
     }
 
-    public void kasitteleMyydyt(HashMap<String, double[]> tuotteet) {
+    public Double kasitteleMyydyt(HashMap<String, double[]> tuotteet) {
+        double rahaaLisaa = 0;
         for (Map.Entry<String, double[]> tuote : tuotteet.entrySet()) {
             String tuotteenNimi = tuote.getKey();
             switch (tuotteenNimi) {
                 case "Puu":
                     puu -= tuote.getValue()[0];
-                    raha += tuote.getValue()[0]*tuote.getValue()[1];
+                    double tulot = tuote.getValue()[0]*tuote.getValue()[1];
+                    raha += tulot;
+                    rahaaLisaa += tulot;
                     break;
 
             }
         }
+        return rahaaLisaa;
     }
 }
