@@ -109,19 +109,36 @@ public class Kauppa {
         //Luodaan rivit
         tuoterivit = new ArrayList<>();
         for (int i = 0; i < tuotteidenNimet.size(); i++) {
-            String tuotteenNimi = tuotteidenNimet.get(i);
-            double hinta;
-            switch (tuotteenNimi) {
-                case "Puu":
-                    hinta = puunHinta;
-                    break;
-                default:
-                    hinta = 0;
-            }
-            //Lisataan hinta muistiin
-            tuotteidenHinnat.put(tuotteenNimi, hinta);
+            if (tuotteidenMaarat.get(tuotteidenNimet.get(i)) > 0) {
+                String tuotteenNimi = tuotteidenNimet.get(i);
+                double hinta;
+                switch (tuotteenNimi) {
+                    case "Puu":
+                        hinta = puunHinta;
+                        break;
+                    default:
+                        hinta = 0;
+                }
+                //Lisataan hinta muistiin
+                tuotteidenHinnat.put(tuotteenNimi, hinta);
 
-            tuoterivit.add(new Kauppatuoterivi(tuotteenNimi, tuotteidenMaarat.get(tuotteenNimi), hinta));
+                Kauppatuoterivi uusiRivi = new Kauppatuoterivi(tuotteenNimi, tuotteidenMaarat.get(tuotteenNimi), hinta);
+                uusiRivi.getSyote().textProperty().addListener((arvo, vanha, uusi) -> {
+                    if (!vanha.equals(uusi)) {
+                        double tulevaRaha = 0;
+                        if (tarkistaMyytavienMaarat() < 0) {
+                            for (Kauppatuoterivi rivi : tuoterivit) {
+                                tulevaRaha += muutaTekstiKokonaisluvuksi(rivi.getSyote().getText()) * rivi.getTuotteenHinta();
+                            }
+                            tulot.setText("Tulot: " + tulevaRaha);
+                        } else {
+                            tulot.setText("Tulot: ???");
+                        }
+
+                    }
+                });
+                tuoterivit.add(uusiRivi);
+            }
         }
         //Tehdaan ArrayListista ObservableList, jonka TableView osaa nayttaa
         ObservableList<Kauppatuoterivi> OBtuoterivit = FXCollections.observableArrayList(tuoterivit);
@@ -145,7 +162,7 @@ public class Kauppa {
         return palautus;
     }
 
-    private int tarkistaMyytavienMaarat() {
+    private Integer tarkistaMyytavienMaarat() {
         for (int i = 0; i < tuoterivit.size(); i++) {
             Kauppatuoterivi rivi = tuoterivit.get(i);
             Integer numero = muutaTekstiKokonaisluvuksi(rivi.getSyote().getText());
@@ -164,14 +181,14 @@ public class Kauppa {
     private Integer muutaTekstiKokonaisluvuksi(String teksti) {
         int numero;
         if (!teksti.isEmpty()) {
-                try {
-                    numero = Integer.parseInt(teksti);
-                } catch (Exception e) {
-                    return null;
-                }
-            } else {
-                numero = 0;
+            try {
+                numero = Integer.parseInt(teksti);
+            } catch (Exception e) {
+                return null;
             }
+        } else {
+            numero = 0;
+        }
         return numero;
     }
 }
