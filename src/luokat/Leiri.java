@@ -163,9 +163,11 @@ public class Leiri {
             if (tyontekija.getTyopaikkaindeksi() == 1) {
                 puu += vuoronKeratyt;
                 vuoronSaatuPuu += vuoronKeratyt;
+                metsa.vahennaPuita(vuoronKeratyt);
             }
             tyontekija.setKeratytResurssit(tyontekija.getKeratytResurssit() + vuoronKeratyt);
         }
+        metsa.kasva();
     }
 
     public double palkkoihinMenevaRaha() {

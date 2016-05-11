@@ -6,7 +6,7 @@ public class Metsa {
   private double palkka;
   public Metsa() {
     this.puidenMaara = 10000;
-    this.puidenKasvu = 1.1;
+    this.puidenKasvu = 1.05;
   }
 
     public int getPuidenMaara() {
@@ -23,6 +23,14 @@ public class Metsa {
 
     public void setPuidenKasvu(double puidenKasvu) {
         this.puidenKasvu = puidenKasvu;
+    }
+
+    public void vahennaPuita(int maara) {
+      puidenMaara -= maara;
+    }
+
+    public void kasva() {
+      puidenMaara = (int) Math.round(puidenMaara*puidenKasvu);
     }
 
 
