@@ -26,6 +26,7 @@ public class Leiri {
     private ArrayList<Tyontekija> vuoronKuolleet;
     private int onnettomuusCooldown;
     private int todnakOnnettomuuskuolema; //Prosentti
+    private boolean kaikilleTyonpaikalleSamaKorkeinPalkka;
     private final Random randomaattori;
     //private Map<String, int> mineraalienMaara;
     private ArrayList<Raportti> raportit;
@@ -44,6 +45,7 @@ public class Leiri {
         this.vuoronPalkattavat = new ArrayList<>(Collections.nCopies(4, 0));
         this.vuoronSaadutAteriat = 0;
         this.vuoronSaatuPuu = 0;
+        this.kaikilleTyonpaikalleSamaKorkeinPalkka = true;
         this.paiva = 0;
         this.todnakOnnettomuuskuolema = 10;
         this.randomaattori = new Random();
@@ -118,7 +120,7 @@ public class Leiri {
     private void laskeTyontekijat() {
         for (int i = 0; i < tyontekijat.size(); i++) {
             Tyontekija tyontekija = tyontekijat.get(i);
-            if (tyontekija.toheloiko()) {
+            if (tyontekija.toheloiko()) { //Jos true, toheloi
                 onnettomuusCooldown += 4;
                 vuoronToheloijienKoodit.add(tyontekija.getTyontekijakoodi());
                 if (randomaattori.nextDouble()*100 > 100-todnakOnnettomuuskuolema) {
@@ -128,8 +130,22 @@ public class Leiri {
 
             }
         }
+        //Korotetaan tyontekijoiden palkkoja
         for (Tyontekija tyontekija : tyontekijat) {
             tyontekija.setPalkka(tyontekija.getPalkka() * Math.pow(1.1, vuoronToheloijienKoodit.size()));
+        }
+        
+        if (kaikilleTyonpaikalleSamaKorkeinPalkka) {
+            double korkeinPalkka = 0;
+            for (Tyontekija tyontekija : tyontekijat) {
+                double tyontekijanPalkka = tyontekija.getPalkka();
+                if (tyontekijanPalkka > korkeinPalkka) {
+                    korkeinPalkka = tyontekijanPalkka;
+                }
+            }
+            for (Tyontekija tyontekija : tyontekijat) {
+                tyontekija.setPalkka(korkeinPalkka);
+            }
         }
     }
 
@@ -155,12 +171,15 @@ public class Leiri {
     private void laskeResurssit() {
         for (Tyontekija tyontekija : tyontekijat) {
             int tehokkuus = tyontekija.getTehokkuus();
+            
+            //Yritetään välttää huonoa tuottoa
             int vuoronKeratyt = 0;
             int yritys = 0;
             while (yritys < 5 && vuoronKeratyt < 4) {
                 vuoronKeratyt = new Random().nextInt(tehokkuus);
                 yritys++;
             }
+            
             if (tyontekija.getTyopaikkaindeksi() == 2) {
 
                 vuoronSaadutAteriat += vuoronKeratyt;
