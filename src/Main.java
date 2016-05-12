@@ -55,6 +55,7 @@ public class Main extends Application implements Initializable {
         maxTickShow = 5;
         voidaanHavita = true;
         tk = new TyontekijanakymanKasittelija();
+        ilmoittaja = new Ilmoittaja();
 
         //Olioiden valmistelu
         leiri = new Leiri();

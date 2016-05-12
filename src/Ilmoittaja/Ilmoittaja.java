@@ -9,6 +9,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -21,12 +23,15 @@ public class Ilmoittaja {
     }
     public void nayta(String otsikko, String sanoma) {
         Stage ikkuna = new Stage();
+        ikkuna.initModality(Modality.APPLICATION_MODAL);
         Parent root;
         try {
             root = FXMLLoader.load(getClass().getResource("/Ilmoittaja/Ilmoittaja.fxml"));
         } catch (Exception e) {
             return;
         }
+        Label teksti = (Label) root.lookup("#teksti");
+        teksti.setText(sanoma);
         ikkuna.setTitle(otsikko);
         Button okNappi = (Button) root.lookup("#okNappi");
         okNappi.setOnAction(e -> {
