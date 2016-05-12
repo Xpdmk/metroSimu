@@ -38,7 +38,7 @@ public class Ilmoittaja {
             ikkuna.close();
         });
         ikkuna.setScene(new Scene(root));
-        ikkuna.show();
+        ikkuna.showAndWait();
         
     }
 }

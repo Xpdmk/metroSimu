@@ -132,10 +132,11 @@ public class Main extends Application implements Initializable {
 
                     //Katsotaan, riittaako raha tyontekijoiden palkkaamiseen
                     if (voidaanHavita && leiri.getRaha() < leiri.palkkoihinMenevaRaha()) {
-                        ilmoittaja.nayta("Peli ohi", "Liian vähän rahaa");
+                        ilmoittaja.nayta("Simualatio ohi", "Liian vähän rahaa");
                         System.exit(0);
                     }
                     leiri.kasittele();
+                    ilmoituskentta.setText("");
                     viimeisinRaportti = leiri.viimeisinRaportti();
                     paivitaTaulukot();
                     asetaLisaaElementitNollaan();
@@ -153,8 +154,10 @@ public class Main extends Application implements Initializable {
                 HashMap<String, Integer> tuotteet = new HashMap<>();
                 tuotteet.put("Puu", leiri.getPuu());
                 double saatuRaha = leiri.kasitteleMyydyt(kauppa.avaa(tuotteet));
-                lisaaIlmoituksiin("Myyntitulot: " + saatuRaha);
-                paivitaTaulukot();
+                if (saatuRaha > 0) {
+                    lisaaIlmoituksiin("Myyntitulot: " + saatuRaha);
+                    paivitaTaulukot();
+                }
             });
         }
 
