@@ -40,6 +40,7 @@ public class Main extends Application implements Initializable {
     static ArrayList<TableView> taulukot;
     static TextArea ilmoituskentta;
     static Raportti viimeisinRaportti;
+    static Label paivalaskuriteksti;
     static int kaytettavienTyopaikkojenMaara;
     static int tyopaikkojenMaara;
     static int maxTickShow;
@@ -74,6 +75,9 @@ public class Main extends Application implements Initializable {
             kentat = new ArrayList<>();
             tekstit = new ArrayList<>();
             taulukot = new ArrayList<>();
+            
+            //Paivalaskuritekstin haku
+            paivalaskuriteksti = (Label) root.lookup("#paivalaskuriteksti");
 
             //Valmistele taulukot
             for (int i = 0; i < 3; i++) {
@@ -137,6 +141,7 @@ public class Main extends Application implements Initializable {
                     }
                     leiri.kasittele();
                     ilmoituskentta.setText("");
+                    paivitaPaivalaskuri();
                     viimeisinRaportti = leiri.viimeisinRaportti();
                     paivitaTaulukot();
                     asetaLisaaElementitNollaan();
@@ -160,6 +165,8 @@ public class Main extends Application implements Initializable {
                 }
             });
         }
+        
+        paivitaPaivalaskuri();
 
         viimeisinRaportti = leiri.viimeisinRaportti();
         valmisteleTaulukot();
@@ -222,7 +229,6 @@ public class Main extends Application implements Initializable {
         ArrayList<Paanakymarivi> vuoronTapahtumat = new ArrayList<>();
         vuoronTapahtumat.add(new Paanakymarivi("Hakattu puu", "" + viimeisinRaportti.getSaatuPuu()));
         vuoronTapahtumat.add(new Paanakymarivi("Metsästetty aterioita", "" + viimeisinRaportti.getSaadutAteriat()));
-        vuoronTapahtumat.add(new Paanakymarivi("Myyntitulot", "" + viimeisinRaportti.getMyyntitulot()));
         if (viimeisinRaportti.getToheloijat().size() > 0) {
             vuoronTapahtumat.add(new Paanakymarivi("Toheloinnit", "" + viimeisinRaportti.getToheloijat().size()));
         }
@@ -308,6 +314,10 @@ public class Main extends Application implements Initializable {
             sliderit.get(i).setValue(0);
             kentat.get(i).setText("");
         }
+    }
+    
+    private void paivitaPaivalaskuri() {
+        paivalaskuriteksti.setText("Päivä: " + leiri.getPaiva());
     }
 
 }

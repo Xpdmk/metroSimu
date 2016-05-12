@@ -6,13 +6,11 @@ public class Raportti {
   //private Map<Integer, Integer> saadutMineraalitPerMineraalikoodi;
   private final int saatuPuu;
   private final ArrayList<Integer> toheloijat;
-  private final double myyntitulot;
 
-  public Raportti(int saadutAteriat, int saatuPuu, ArrayList<Integer> toheloijat, double myyntitulot) {
+  public Raportti(int saadutAteriat, int saatuPuu, ArrayList<Integer> toheloijat) {
     this.saadutAteriat = saadutAteriat;
     this.saatuPuu = saatuPuu;
     this.toheloijat = toheloijat;
-    this.myyntitulot = myyntitulot;
   }
 
     public int getSaadutAteriat() {
@@ -25,10 +23,6 @@ public class Raportti {
 
     public ArrayList<Integer> getToheloijat() {
         return toheloijat;
-    }
-
-    public double getMyyntitulot() {
-        return myyntitulot;
     }
 
 

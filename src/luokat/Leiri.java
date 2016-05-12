@@ -20,6 +20,7 @@ public class Leiri {
     private ArrayList<Integer> vuoronToheloijienKoodit;
     private int vuoronSaadutAteriat;
     private int vuoronSaatuPuu;
+    private int paiva;
     private ArrayList<Integer> vuoronPotkittavat;
     private ArrayList<Integer> vuoronPalkattavat;
     private ArrayList<Tyontekija> vuoronKuolleet;
@@ -43,6 +44,7 @@ public class Leiri {
         this.vuoronPalkattavat = new ArrayList<>(Collections.nCopies(4, 0));
         this.vuoronSaadutAteriat = 0;
         this.vuoronSaatuPuu = 0;
+        this.paiva = 0;
         this.todnakOnnettomuuskuolema = 10;
         this.randomaattori = new Random();
     }
@@ -59,8 +61,10 @@ public class Leiri {
         return puu;
     }
 
-    public void kasittele() {
-        //Kasittelee vuoron tapahtumat
+    public void kasittele() { //Kasittelee vuoron tapahtumat
+        
+        //Seuraava päivä menee
+        paiva++;
 
         //Muuttujien valmistelut
         vuoronToheloijienKoodit = new ArrayList<>();
@@ -97,7 +101,7 @@ public class Leiri {
         laskeTyontekijat();
         laskeResurssit();
 
-        raportit.add(new Raportti(vuoronSaadutAteriat, vuoronSaatuPuu, vuoronToheloijienKoodit, 0));
+        raportit.add(new Raportti(vuoronSaadutAteriat, vuoronSaatuPuu, vuoronToheloijienKoodit));
 
     }
 
@@ -190,7 +194,7 @@ public class Leiri {
         if (!raportit.isEmpty()) {
             return raportit.get(raportit.size() - 1);
         } else {
-            return new Raportti(0, 0, new ArrayList<>(), 0);
+            return new Raportti(0, 0, new ArrayList<>());
         }
 
     }
@@ -321,5 +325,9 @@ public class Leiri {
             }
         }
         return rahaaLisaa;
+    }
+    
+    public int getPaiva() {
+        return paiva;
     }
 }
