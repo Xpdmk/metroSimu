@@ -40,7 +40,6 @@ public class Main extends Application implements Initializable {
     static ArrayList<TableView> taulukot;
     static TextArea ilmoituskentta;
     static Raportti viimeisinRaportti;
-    static boolean voidaanSulkea;
     static int kaytettavienTyopaikkojenMaara;
     static int tyopaikkojenMaara;
     static int maxTickShow;
@@ -50,7 +49,6 @@ public class Main extends Application implements Initializable {
     public static void main(String[] args) {
         //Paaikkunan valmistelu ja avaus
         tyopaikkojenMaara = 3;
-        voidaanSulkea = true;
         kaytettavienTyopaikkojenMaara = 2;
         maxTickShow = 5;
         voidaanHavita = true;
@@ -107,24 +105,16 @@ public class Main extends Application implements Initializable {
                     TextField kentta = (TextField) root.lookup("#lisaaKentta" + i);
                     kentat.add(kentta);
                     kentta.setPromptText("Montako palkataan?");
-                    ////Lisataan kuuntelija, joka tarkistaa, onko syote numero
-                    kentta.focusedProperty().addListener((arvo, vanha, uusi) -> {
-                        if (vanha && !kentta.getText().isEmpty()) {
-                            if (tarkistaKentat(true)) {
-                                voidaanSulkea = true;
-                            } else {
-                                voidaanSulkea = false;
-                            }
-                        }
-                    });
+                    ////Lisataan kuuntelija, joka asettaa palkattavien maaran, jos teksti vaihtui
                     kentta.textProperty().addListener((teksti, vanha, uusi) -> {
                         if (!vanha.equals(uusi)) {
                             int uusiArvo = 0;
-                            if (!uusi.isEmpty() && tarkistaKentat(false)) {
+                            if (!uusi.isEmpty() && tarkistaKentat() == null) {
                                 uusiArvo = Integer.parseInt(kentta.getText());
                             }
                             leiri.setPalkattavienMaaraTyonpaikkaindeksilla(kentat.indexOf(kentta) + 1, uusiArvo);
                             paivitaTaulukot();
+
                         }
                     });
                     tekstit.add((Label) root.lookup("#tyontekijatTeksti" + i));
@@ -135,7 +125,8 @@ public class Main extends Application implements Initializable {
             //Nappien toimintojen maaritteleminen
             Button suoritaNappi = (Button) root.lookup("#suorita");
             suoritaNappi.setOnAction(e -> {
-                if (voidaanSulkea) {
+                Integer virheellinenKentta = tarkistaKentat();
+                if (virheellinenKentta == null) {
                     //Suljetaan ikkuna
                     primaryStage.close();
 
@@ -150,6 +141,9 @@ public class Main extends Application implements Initializable {
                     asetaLisaaElementitNollaan();
                     paivitaTyontekijatekstit();
                     primaryStage.show();
+                } else {
+                    ilmoittaja.nayta("Syötteessä vika", "Syotteen täytyy olla numero tai tyhjä");
+                    kentat.get(virheellinenKentta).requestFocus();
                 }
 
             });
@@ -177,23 +171,18 @@ public class Main extends Application implements Initializable {
 
     }
 
-    private boolean tarkistaKentat(boolean ilmoitetaan) { //Palauttaa true, jos OK
+    private Integer tarkistaKentat() { //Palauttaa true, jos OK
         for (TextField kentta : kentat) {
             if (!kentta.getText().isEmpty()) {
                 try {
                     leiri.setPalkattavienMaaraTyonpaikkaindeksilla(kentat.indexOf(kentta) + 1, Integer.parseInt(kentta.getText()));
                 } catch (Exception e) {
-                    if (ilmoitetaan) {
-                        ilmoittaja.nayta("Syötteessä vika","Syotteen täytyy olla numero tai tyhjä");
-                        kentta.requestFocus();
-                    }
-
-                    return false;
+                    return kentat.indexOf(kentta);
                 }
             }
 
         }
-        return true;
+        return null;
     }
 
     @Override
@@ -310,7 +299,7 @@ public class Main extends Application implements Initializable {
         }
         ilmoituskentta.setText(ilmoituskentta.getText() + "\n" + lisattava);
     }
-    
+
     private void asetaLisaaElementitNollaan() {
         for (int i = 0; i < sliderit.size(); i++) {
             sliderit.get(i).setValue(0);
