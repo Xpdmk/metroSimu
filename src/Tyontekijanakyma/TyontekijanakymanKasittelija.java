@@ -21,7 +21,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import Luokat.Tyontekija;
-import javax.swing.JOptionPane;
+import Ilmoittaja.Ilmoittaja;
 
 public class TyontekijanakymanKasittelija implements Initializable {
 
@@ -36,6 +36,7 @@ public class TyontekijanakymanKasittelija implements Initializable {
     private Button hyvaksy;
     private Button peruuta;
     private TableView taulukko;
+    private Ilmoittaja ilmoittaja;
 
     @FXML
     @Override
@@ -46,6 +47,7 @@ public class TyontekijanakymanKasittelija implements Initializable {
     private void valmistele(String ikkunanOtsikko) {
         //Kasittelyn valmistelu
         muutoksetTallennetaan = true;
+        ilmoittaja = new Ilmoittaja();
 
         //Valmistellaan ikkuna
         ikkuna = new Stage();
@@ -54,7 +56,7 @@ public class TyontekijanakymanKasittelija implements Initializable {
         ikkuna.setTitle(ikkunanOtsikko);
         ikkuna.setOnCloseRequest(e -> {
             e.consume();
-            JOptionPane.showMessageDialog(null, "Paina Hyväksy tai Peruuta palataksesi pääikkunaan");
+            ilmoittaja.nayta("Valitse, tallennetaanko muutokset", "Paina Hyväksy tai Peruuta palataksesi pääikkunaan");
         });
 
         //Tuodaan asettelu-muuttujaan asettelu sijainnista
