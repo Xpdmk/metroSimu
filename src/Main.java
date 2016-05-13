@@ -145,6 +145,7 @@ public class Main extends Application implements Initializable {
                     viimeisinRaportti = leiri.viimeisinRaportti();
                     paivitaTaulukot();
                     asetaLisaaElementitNollaan();
+                    paivitaLisaaelementit();
                     paivitaTyontekijatekstit();
                     primaryStage.show();
                 } else {
